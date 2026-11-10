@@ -1,0 +1,190 @@
+// Palette taken from the SiteSync admin dashboard (same tokens as the navbar)
+:host {
+  --home-bg: #08161b;
+  --home-card: #0f242b;
+  --home-card-2: #12292f;
+  --home-border: #16323a;
+  --home-text: #e7f2f3;
+  --home-text-2: #9bb4b9;
+  --home-primary: #2dd4bf;
+  --home-primary-soft: rgba(45, 212, 191, 0.12);
+  --home-primary-ink: #04201c;
+
+  display: block;
+  min-height: 100vh;
+  background: var(--home-bg);
+  color: var(--home-text);
+}
+
+.hero-title {
+  max-width: 18ch;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.hero-lead {
+  max-width: 52ch;
+  margin-top: 1.25rem;
+  color: var(--home-text-2);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.item-title {
+  font-weight: 600;
+}
+
+.item-text {
+  color: var(--home-text-2);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+// Buttons (pButton on anchors)
+.btn-primary,
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.25rem;
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: filter 0.15s ease, background-color 0.15s ease;
+}
+
+.btn-primary {
+  border: 1px solid var(--home-primary);
+  background: var(--home-primary);
+  color: var(--home-primary-ink);
+
+  &:hover {
+    background: var(--home-primary);
+    color: var(--home-primary-ink);
+    filter: brightness(1.08);
+  }
+}
+
+.btn-outline {
+  border: 1px solid var(--home-border);
+  background: transparent;
+  color: var(--home-text);
+
+  &:hover {
+    background: var(--home-primary-soft);
+    border-color: var(--home-primary);
+    color: var(--home-primary);
+  }
+}
+
+.social {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--home-border);
+  border-radius: 0.75rem;
+  background: var(--home-card);
+  color: var(--home-text-2);
+  transition: color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    color: var(--home-primary);
+    border-color: var(--home-primary);
+  }
+}
+
+.icon-tile {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.65rem;
+  background: var(--home-primary-soft);
+  color: var(--home-primary);
+}
+
+// Panel
+.panel {
+  overflow: hidden;
+  border: 1px solid var(--home-border);
+  border-radius: 1rem;
+  background: var(--home-card);
+
+  &__head {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--home-border);
+    background: var(--home-card-2);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+
+    & + & {
+      border-top: 1px solid var(--home-border);
+    }
+  }
+
+  &__foot {
+    display: block;
+    padding: 0.9rem 1.25rem;
+    border-top: 1px solid var(--home-border);
+    color: var(--home-primary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      background: var(--home-primary-soft);
+    }
+  }
+}
+
+.cta {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 2rem;
+  border: 1px solid var(--home-border);
+  border-radius: 1rem;
+  background: var(--home-card);
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2.5rem;
+  }
+}
+
+// Keyboard focus
+.btn-primary:focus-visible,
+.btn-outline:focus-visible,
+.social:focus-visible,
+.panel__foot:focus-visible {
+  outline: 2px solid var(--home-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary,
+  .btn-outline,
+  .social {
+    transition: none;
+  }
+}

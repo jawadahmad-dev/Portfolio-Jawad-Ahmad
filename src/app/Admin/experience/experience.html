@@ -1,0 +1,122 @@
+<section class="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold">Experience</h1>
+        <p class="mt-1 text-sm text-[var(--x-text-2)]">Add the roles that appear on your experience page.</p>
+    </div>
+
+    <div class="grid items-start gap-6 lg:grid-cols-[minmax(0,26rem)_1fr]">
+        <!-- Form -->
+        <form [formGroup]="experienceForm" (ngSubmit)="onSubmit()" class="card space-y-4 p-5 lg:sticky lg:top-6">
+            <h2 class="font-semibold">{{ editingId() ? 'Edit experience' : 'Add experience' }}</h2>
+
+            <div>
+                <label for="jobTitle" class="label">Job title</label>
+                <input id="jobTitle" formControlName="jobTitle" pInputText class="field"
+                    placeholder="Full-stack developer" />
+                @if (isInvalid('jobTitle')) {
+                <small class="text-[var(--x-red)]">Job title is required.</small>
+                }
+            </div>
+
+            <div>
+                <label for="company" class="label">Company</label>
+                <input id="company" formControlName="company" pInputText class="field" />
+                @if (isInvalid('company')) {
+                <small class="text-[var(--x-red)]">Company is required.</small>
+                }
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                    <label for="startDate" class="label">Start date</label>
+                    <p-datepicker inputId="startDate" formControlName="startDate" view="month" dateFormat="M yy"
+                        placeholder="Select month" appendTo="body" [showIcon]="true" iconDisplay="input"
+                        [maxDate]="experienceForm.get('endDate')?.value" styleClass="w-full"
+                        inputStyleClass="!w-full !bg-transparent !border-[var(--x-border)] !text-[var(--x-text)]" />
+                    @if (isInvalid('startDate')) {
+                    <small class="text-[var(--x-red)]">Start date is required.</small>
+                    }
+                </div>
+                <div>
+                    <label for="endDate" class="label">End date</label>
+                    <p-datepicker inputId="endDate" formControlName="endDate" view="month" dateFormat="M yy"
+                        [placeholder]="experienceForm.get('currentlyWorking')?.value ? 'Present' : 'Select month'"
+                        appendTo="body" [showIcon]="true" iconDisplay="input"
+                        [minDate]="experienceForm.get('startDate')?.value" styleClass="w-full"
+                        inputStyleClass="!w-full !bg-transparent !border-[var(--x-border)] !text-[var(--x-text)]" />
+                </div>
+            </div>
+            @if (experienceForm.hasError('dateRange')) {
+            <small class="block text-[var(--x-red)]">The end date can't be before the start date.</small>
+            }
+
+            <div class="flex items-center gap-3">
+                <p-toggleswitch inputId="currentlyWorking" formControlName="currentlyWorking" />
+                <label for="currentlyWorking" class="text-sm">I currently work here</label>
+            </div>
+
+            <div>
+                <label for="description" class="label">What you did</label>
+                <textarea id="description" formControlName="description" pTextarea rows="5" class="field"></textarea>
+                @if (isInvalid('description')) {
+                <small class="text-[var(--x-red)]">Description is required.</small>
+                }
+            </div>
+
+            <div class="flex justify-end gap-3 border-t border-[var(--x-border)] pt-4">
+                @if (editingId()) {
+                <button pButton type="button" label="Cancel" class="btn-ghost" (click)="cancelEdit()"></button>
+                }
+                <button pButton type="submit" icon="pi pi-check" class="btn-primary"
+                    [label]="editingId() ? 'Save changes' : 'Add experience'" [loading]="saving()"></button>
+            </div>
+        </form>
+
+        <!-- Saved entries -->
+        <div class="space-y-4">
+            @if (loading() && experiences().length === 0) {
+            <p class="text-sm text-[var(--x-text-2)]">Loading experience...</p>
+            }
+
+            @for (e of experiences(); track e.id) {
+            <article class="card p-5" [class.card--editing]="editingId() === e.id">
+                <div class="flex items-start justify-between gap-3">
+                    <div class="min-w-0">
+                        <h3 class="font-semibold">{{ e.jobTitle }}</h3>
+                        <p class="text-sm font-medium text-[var(--x-primary)]">{{ e.company }}</p>
+                        <p class="mt-1 text-xs text-[var(--x-text-2)]">{{ period(e) }}</p>
+                    </div>
+
+                    @if (deletingId() === e.id) {
+                    <div class="flex shrink-0 items-center gap-2">
+                        <span class="hidden text-sm text-[var(--x-text-2)] sm:inline">Delete this entry?</span>
+                        <button pButton type="button" label="Delete" class="btn-danger"
+                            (click)="confirmDelete(e)"></button>
+                        <button pButton type="button" label="Keep" class="btn-ghost"
+                            (click)="deletingId.set(null)"></button>
+                    </div>
+                    } @else {
+                    <div class="flex shrink-0 gap-2">
+                        <button pButton type="button" icon="pi pi-pencil" class="icon-btn" aria-label="Edit experience"
+                            (click)="editExperience(e)"></button>
+                        <button pButton type="button" icon="pi pi-trash" class="icon-btn icon-btn--danger"
+                            aria-label="Delete experience" (click)="deletingId.set(e.id!)"></button>
+                    </div>
+                    }
+                </div>
+
+                <p class="mt-3 whitespace-pre-line text-sm leading-relaxed text-[var(--x-text-2)]">{{ e.description }}
+                </p>
+            </article>
+            } @empty {
+            @if (!loading()) {
+            <div class="card p-10 text-center text-[var(--x-text-2)]">
+                <i class="pi pi-briefcase mb-3 text-3xl opacity-50" aria-hidden="true"></i>
+                <p class="font-medium text-[var(--x-text)]">No experience yet</p>
+                <p class="text-sm">Add your first role using the form.</p>
+            </div>
+            }
+            }
+        </div>
+    </div>
+</section>

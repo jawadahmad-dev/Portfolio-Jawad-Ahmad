@@ -1,0 +1,107 @@
+<section class="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold">Skills</h1>
+        <p class="mt-1 text-sm text-[var(--x-text-2)]">Add the skills that appear on your portfolio.</p>
+    </div>
+
+    <div class="grid items-start gap-6 lg:grid-cols-[minmax(0,26rem)_1fr]">
+        <!-- Form -->
+        <form [formGroup]="skillsForm" (ngSubmit)="onSubmit()" class="card space-y-4 p-5 lg:sticky lg:top-6">
+            <h2 class="font-semibold">{{ editingId() ? 'Edit skill' : 'Add skill' }}</h2>
+
+            <div>
+                <label for="title" class="label">Title</label>
+                <input id="title" formControlName="title" pInputText class="field" placeholder="Angular" />
+                @if (isInvalid('title')) {
+                <small class="text-[var(--x-red)]">Title is required.</small>
+                }
+            </div>
+
+            <div>
+                <label for="iconLink" class="label">Icon link (optional)</label>
+                <div class="flex items-center gap-3">
+                    <span class="skill-icon shrink-0" aria-hidden="true">
+                        @if (previewUrl() && !previewFailed()) {
+                        <img [src]="previewUrl()" alt="" class="h-full w-full object-contain p-2"
+                            (error)="previewFailed.set(true)" />
+                        } @else {
+                        <i class="pi pi-code"></i>
+                        }
+                    </span>
+                    <input id="iconLink" formControlName="iconLink" pInputText class="field" placeholder="https://" />
+                </div>
+                @if (isInvalid('iconLink')) {
+                <small class="text-[var(--x-red)]">Enter a link that starts with http:// or https://.</small>
+                } @else if (previewUrl() && previewFailed()) {
+                <small class="text-[var(--x-red)]">Could not load this icon. Check the link.</small>
+                }
+            </div>
+
+            <div>
+                <label for="description" class="label">Description</label>
+                <textarea id="description" formControlName="description" pTextarea rows="4" class="field"></textarea>
+                @if (isInvalid('description')) {
+                <small class="text-[var(--x-red)]">Description is required.</small>
+                }
+            </div>
+
+            <div class="flex justify-end gap-3 border-t border-[var(--x-border)] pt-4">
+                @if (editingId()) {
+                <button pButton type="button" label="Cancel" class="btn-ghost" (click)="cancelEdit()"></button>
+                }
+                <button pButton type="submit" icon="pi pi-check" class="btn-primary"
+                    [label]="editingId() ? 'Save changes' : 'Add skill'" [loading]="saving()"></button>
+            </div>
+        </form>
+
+        <!-- Saved skills -->
+        <div>
+            @if (loading() && skills().length === 0) {
+            <p class="text-sm text-[var(--x-text-2)]">Loading skills...</p>
+            }
+
+            <div class="grid gap-4 sm:grid-cols-2">
+                @for (s of skills(); track s.id) {
+                <article class="card flex flex-col gap-3 p-5" [class.card--editing]="editingId() === s.id">
+                    <div class="flex items-center gap-3">
+                        <span class="skill-icon shrink-0" aria-hidden="true">
+                            @if (s.iconLink && !isBroken(s.id)) {
+                            <img [src]="s.iconLink" alt="" loading="lazy" class="h-full w-full object-contain p-2"
+                                (error)="markBroken(s.id)" />
+                            } @else {
+                            <i class="pi pi-code"></i>
+                            }
+                        </span>
+                        <h3 class="min-w-0 truncate font-semibold">{{ s.title }}</h3>
+                    </div>
+
+                    <p class="line-clamp-3 text-sm leading-relaxed text-[var(--x-text-2)]">{{ s.description }}</p>
+
+                    <div class="mt-auto flex items-center justify-end gap-2 border-t border-[var(--x-border)] pt-4">
+                        @if (deletingId() === s.id) {
+                        <span class="mr-auto text-sm text-[var(--x-text-2)]">Delete this skill?</span>
+                        <button pButton type="button" label="Delete" class="btn-danger"
+                            (click)="confirmDelete(s)"></button>
+                        <button pButton type="button" label="Keep" class="btn-ghost"
+                            (click)="deletingId.set(null)"></button>
+                        } @else {
+                        <button pButton type="button" icon="pi pi-pencil" class="icon-btn" aria-label="Edit skill"
+                            (click)="editSkill(s)"></button>
+                        <button pButton type="button" icon="pi pi-trash" class="icon-btn icon-btn--danger"
+                            aria-label="Delete skill" (click)="deletingId.set(s.id!)"></button>
+                        }
+                    </div>
+                </article>
+                } @empty {
+                @if (!loading()) {
+                <div class="card p-10 text-center text-[var(--x-text-2)] sm:col-span-2">
+                    <i class="pi pi-bolt mb-3 text-3xl opacity-50" aria-hidden="true"></i>
+                    <p class="font-medium text-[var(--x-text)]">No skills yet</p>
+                    <p class="text-sm">Add your first skill using the form.</p>
+                </div>
+                }
+                }
+            </div>
+        </div>
+    </div>
+</section>

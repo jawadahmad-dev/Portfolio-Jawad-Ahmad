@@ -1,0 +1,58 @@
+<header class="nav" [class.nav--scrolled]="scrolled()">
+    <nav class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6" aria-label="Main">
+        <!-- Brand -->
+        <a routerLink="/" class="brand" aria-label="Jawad, home" (click)="closeMenu()">
+            <span class="brand__mark" aria-hidden="true">JW</span>
+            <span class="brand__name">Jawad</span>
+        </a>
+
+        <!-- Desktop links -->
+        <ul class="hidden items-center gap-1 md:flex">
+            @for (link of links; track link.path) {
+            <li>
+                <a class="nav-link" [routerLink]="link.path" routerLinkActive="nav-link--active"
+                    ariaCurrentWhenActive="page" [routerLinkActiveOptions]="{ exact: link.exact ?? false }">
+                    <i [class]="link.icon" aria-hidden="true"></i>
+                    <span>{{ link.label }}</span>
+                </a>
+            </li>
+            }
+        </ul>
+
+        <div class="flex items-center gap-2">
+            <!-- Desktop call to action -->
+            <div class="hidden md:block">
+                <a pButton routerLink="/contact" class="nav-cta" label="Contact me" icon="pi pi-send"></a>
+            </div>
+
+            <!-- Mobile menu toggle -->
+            <p-button class="md:hidden" [icon]="menuOpen() ? 'pi pi-times' : 'pi pi-bars'"
+                [ariaLabel]="menuOpen() ? 'Close menu' : 'Open menu'" (onClick)="toggleMenu()"
+                styleClass="!h-10 !w-10 !rounded-xl !border !border-[var(--nav-border)] !bg-[var(--nav-card)] !text-[var(--nav-text)]" />
+        </div>
+    </nav>
+
+    <!-- Mobile panel -->
+    @if (menuOpen()) {
+    <div class="mobile-panel md:hidden">
+        <ul class="flex flex-col gap-1 p-3">
+            @for (link of links; track link.path) {
+            <li>
+                <a class="nav-link nav-link--block" [routerLink]="link.path" routerLinkActive="nav-link--active"
+                    ariaCurrentWhenActive="page" [routerLinkActiveOptions]="{ exact: link.exact ?? false }"
+                    (click)="closeMenu()">
+                    <i [class]="link.icon" aria-hidden="true"></i>
+                    <span>{{ link.label }}</span>
+                </a>
+            </li>
+            }
+        </ul>
+        <div class="px-3 pb-3">
+            <a pButton routerLink="/contact" class="nav-cta nav-cta--block" label="Contact me" icon="pi pi-send"
+                (click)="closeMenu()"></a>
+        </div>
+    </div>
+    }
+</header>
+
+<router-outlet />

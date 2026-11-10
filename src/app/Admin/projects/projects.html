@@ -1,0 +1,155 @@
+<section class="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold">Projects</h1>
+        <p class="mt-1 text-sm text-[var(--x-text-2)]">Add the projects that appear on your portfolio.</p>
+    </div>
+
+    <div class="grid items-start gap-6 lg:grid-cols-[minmax(0,26rem)_1fr]">
+        <!-- Form -->
+        <form [formGroup]="projectsForm" (ngSubmit)="onSubmit()" class="card space-y-4 p-5 lg:sticky lg:top-6">
+            <h2 class="font-semibold">{{ editingId() ? 'Edit project' : 'Add project' }}</h2>
+
+            <div>
+                <label for="title" class="label">Title</label>
+                <input id="title" formControlName="title" pInputText class="field" />
+                @if (isInvalid('title')) {
+                <small class="text-[var(--x-red)]">Title is required.</small>
+                }
+            </div>
+
+            <div>
+                <label for="description" class="label">Description</label>
+                <textarea id="description" formControlName="description" pTextarea rows="4" class="field"></textarea>
+                @if (isInvalid('description')) {
+                <small class="text-[var(--x-red)]">Description is required.</small>
+                }
+            </div>
+
+            <div>
+                <label for="image" class="label">Image URL</label>
+                <input id="image" formControlName="image" pInputText class="field" placeholder="https://" />
+                @if (isInvalid('image')) {
+                <small class="text-[var(--x-red)]">Enter a link that starts with http:// or https://.</small>
+                }
+                @if (previewUrl()) {
+                @if (!previewFailed()) {
+                <img [src]="previewUrl()" alt="Preview of the project image"
+                    class="mt-3 aspect-video w-full rounded-lg border border-[var(--x-border)] object-cover"
+                    (error)="previewFailed.set(true)" />
+                } @else {
+                <small class="mt-2 block text-[var(--x-red)]">Could not load this image. Check the link.</small>
+                }
+                }
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                    <label for="githubLink" class="label">GitHub link</label>
+                    <input id="githubLink" formControlName="githubLink" pInputText class="field"
+                        placeholder="https://" />
+                    @if (isInvalid('githubLink')) {
+                    <small class="text-[var(--x-red)]">Enter a valid GitHub link.</small>
+                    }
+                </div>
+                <div>
+                    <label for="liveLink" class="label">Live link (optional)</label>
+                    <input id="liveLink" formControlName="liveLink" pInputText class="field" placeholder="https://" />
+                    @if (isInvalid('liveLink')) {
+                    <small class="text-[var(--x-red)]">Enter a valid link.</small>
+                    }
+                </div>
+            </div>
+
+            <div>
+                <label for="technologies" class="label">Technologies, separated by commas</label>
+                <input id="technologies" formControlName="technologies" pInputText class="field"
+                    placeholder="Angular, PrimeNG, Firebase" />
+                @if (isInvalid('technologies')) {
+                <small class="text-[var(--x-red)]">Add at least one technology.</small>
+                }
+            </div>
+
+            <div class="flex justify-end gap-3 border-t border-[var(--x-border)] pt-4">
+                @if (editingId()) {
+                <button pButton type="button" label="Cancel" class="btn-ghost" (click)="cancelEdit()"></button>
+                }
+                <button pButton type="submit" icon="pi pi-check" class="btn-primary"
+                    [label]="editingId() ? 'Save changes' : 'Add project'" [loading]="saving()"></button>
+            </div>
+        </form>
+
+        <!-- Saved projects -->
+        <div>
+            @if (loading() && projects().length === 0) {
+            <p class="text-sm text-[var(--x-text-2)]">Loading projects...</p>
+            }
+
+            <div class="grid gap-4 sm:grid-cols-2">
+                @for (p of projects(); track p.id) {
+                <article class="card card--clip flex flex-col" [class.card--editing]="editingId() === p.id">
+                    @if (p.image && !isBroken(p.id)) {
+                    <img [src]="p.image" [alt]="p.title + ' screenshot'" loading="lazy"
+                        class="aspect-video w-full border-b border-[var(--x-border)] object-cover"
+                        (error)="markBroken(p.id)" />
+                    } @else {
+                    <div class="thumb-fallback" aria-hidden="true">
+                        <i class="pi pi-image text-3xl"></i>
+                    </div>
+                    }
+
+                    <div class="flex flex-1 flex-col gap-3 p-5">
+                        <div>
+                            <h3 class="font-semibold">{{ p.title }}</h3>
+                            <p class="mt-1 line-clamp-3 text-sm leading-relaxed text-[var(--x-text-2)]">{{ p.description
+                                }}</p>
+                        </div>
+
+                        <div class="flex flex-wrap gap-1.5">
+                            @for (t of techList(p); track t) {
+                            <p-tag [value]="t"
+                                styleClass="!rounded-full !px-2 !py-0.5 !text-xs !bg-[var(--x-primary-soft)] !text-[var(--x-primary)]" />
+                            }
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-4 text-sm">
+                            @if (p.liveLink) {
+                            <a [href]="p.liveLink" target="_blank" rel="noopener noreferrer" class="link">
+                                <i class="pi pi-external-link" aria-hidden="true"></i> Live site
+                            </a>
+                            }
+                            @if (p.githubLink) {
+                            <a [href]="p.githubLink" target="_blank" rel="noopener noreferrer" class="link">
+                                <i class="pi pi-github" aria-hidden="true"></i> Code
+                            </a>
+                            }
+                        </div>
+
+                        <div class="mt-auto flex items-center justify-end gap-2 border-t border-[var(--x-border)] pt-4">
+                            @if (deletingId() === p.id) {
+                            <span class="mr-auto text-sm text-[var(--x-text-2)]">Delete this project?</span>
+                            <button pButton type="button" label="Delete" class="btn-danger"
+                                (click)="confirmDelete(p)"></button>
+                            <button pButton type="button" label="Keep" class="btn-ghost"
+                                (click)="deletingId.set(null)"></button>
+                            } @else {
+                            <button pButton type="button" icon="pi pi-pencil" class="icon-btn" aria-label="Edit project"
+                                (click)="editProject(p)"></button>
+                            <button pButton type="button" icon="pi pi-trash" class="icon-btn icon-btn--danger"
+                                aria-label="Delete project" (click)="deletingId.set(p.id!)"></button>
+                            }
+                        </div>
+                    </div>
+                </article>
+                } @empty {
+                @if (!loading()) {
+                <div class="card p-10 text-center text-[var(--x-text-2)] sm:col-span-2">
+                    <i class="pi pi-th-large mb-3 text-3xl opacity-50" aria-hidden="true"></i>
+                    <p class="font-medium text-[var(--x-text)]">No projects yet</p>
+                    <p class="text-sm">Add your first project using the form.</p>
+                </div>
+                }
+                }
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,123 @@
+// Same teal palette as the rest of the portfolio
+:host {
+  --x-bg: #08161b;
+  --x-card: #0f242b;
+  --x-border: #16323a;
+  --x-text: #e7f2f3;
+  --x-text-2: #9bb4b9;
+  --x-primary: #2dd4bf;
+  --x-primary-soft: rgba(45, 212, 191, 0.12);
+  --x-ink: #04201c;
+  --x-red: #f87171;
+
+  display: block;
+  background: var(--x-bg);
+  color: var(--x-text);
+}
+
+.card {
+  border: 1px solid var(--x-border);
+  border-radius: 1rem;
+  background: var(--x-card);
+  transition: border-color 0.15s ease;
+
+  &--editing {
+    border-color: var(--x-primary);
+  }
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--x-text-2);
+}
+
+.field {
+  width: 100%;
+  background: transparent;
+  border-color: var(--x-border);
+  color: var(--x-text);
+
+  &::placeholder {
+    color: var(--x-text-2);
+  }
+
+  &:focus {
+    border-color: var(--x-primary);
+  }
+}
+
+.btn-primary,
+.btn-ghost,
+.btn-danger {
+  border-radius: 0.75rem;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background: var(--x-primary);
+  border: 1px solid var(--x-primary);
+  color: var(--x-ink);
+
+  &:hover {
+    background: var(--x-primary);
+    filter: brightness(1.08);
+  }
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--x-border);
+  color: var(--x-text);
+
+  &:hover {
+    background: var(--x-primary-soft);
+    border-color: var(--x-primary);
+    color: var(--x-primary);
+  }
+}
+
+.btn-danger {
+  background: var(--x-red);
+  border: 1px solid var(--x-red);
+  color: #2b0a0a;
+}
+
+.icon-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  background: var(--x-bg);
+  border: 1px solid var(--x-border);
+  border-radius: 0.6rem;
+  color: var(--x-primary);
+
+  &:hover {
+    background: var(--x-primary-soft);
+  }
+
+  &--danger {
+    color: var(--x-red);
+    border-color: rgba(248, 113, 113, 0.25);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}
+
+.skill-icon {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  overflow: hidden;
+  border: 1px solid var(--x-border);
+  border-radius: 0.75rem;
+  background: var(--x-primary-soft);
+  color: var(--x-primary);
+  font-size: 1.25rem;
+}

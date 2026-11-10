@@ -1,0 +1,31 @@
+<form [formGroup]="Aboutform" (ngSubmit)="onAboutSubmit()">
+    <div>
+        <label for="details">Details:</label>
+        <textarea id="details" formControlName="details"></textarea>
+    </div>
+    <button type="submit">Update</button>
+</form>
+
+<form [formGroup]="HeroSectionForm" (ngSubmit)="onHeroSectionSubmit()">
+    <div>
+        <label for="title">Title:</label>
+        <input id="title" formControlName="title" />
+    </div>
+    <div>
+        <label for="subtitle">Subtitle:</label>
+        <input id="subtitle" formControlName="subtitle" />
+    </div>
+    <div>
+        <label for="description">Description:</label>
+        <textarea id="description" formControlName="description"></textarea>
+    </div>
+    <div>
+        <label for="resume">Resume:</label>
+        <input id="resume" formControlName="resume" />
+    </div>
+    <div>
+        <label for="image">Image:</label>
+        <input id="image" formControlName="image" />
+    </div>
+    <button type="submit">Update</button>
+</form>

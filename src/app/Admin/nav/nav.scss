@@ -1,0 +1,154 @@
+// Same teal palette as the rest of the portfolio
+:host {
+  --a-bg: #08161b;
+  --a-sidebar: #0a1b21;
+  --a-card: #0f242b;
+  --a-border: #16323a;
+  --a-text: #e7f2f3;
+  --a-text-2: #9bb4b9;
+  --a-primary: #2dd4bf;
+  --a-primary-soft: rgba(45, 212, 191, 0.12);
+  --a-ink: #04201c;
+
+  display: block;
+}
+
+.admin-shell {
+  background: var(--a-bg);
+  color: var(--a-text);
+}
+
+.sidebar,
+.topbar {
+  background: var(--a-sidebar);
+}
+
+.sidebar {
+  border-right: 1px solid var(--a-border);
+}
+
+.topbar {
+  border-bottom: 1px solid var(--a-border);
+}
+
+// Brand
+.brand {
+  color: var(--a-text);
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--a-primary);
+    outline-offset: 2px;
+    border-radius: 0.75rem;
+  }
+
+  &__mark {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    background: var(--a-primary);
+    color: var(--a-ink);
+    font-size: 0.85rem;
+    font-weight: 700;
+
+    &--sm {
+      width: 2.25rem;
+      height: 2.25rem;
+    }
+  }
+}
+
+.sidebar > .brand {
+  border-bottom: 1px solid var(--a-border);
+}
+
+// Navigation links
+.nav-item {
+  position: relative;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  color: var(--a-text-2);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
+
+  &:hover {
+    color: var(--a-text);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--a-primary);
+    outline-offset: 2px;
+  }
+
+  &--active,
+  &--active:hover {
+    color: var(--a-primary);
+    background: var(--a-primary-soft);
+  }
+
+  // Active marker on the right edge, like the dashboard sidebar
+  &--active:not(.nav-item--compact)::after {
+    content: '';
+    position: absolute;
+    top: 0.65rem;
+    right: 0.5rem;
+    bottom: 0.65rem;
+    width: 3px;
+    border-radius: 3px;
+    background: var(--a-primary);
+  }
+
+  &--compact {
+    padding: 0.5rem 0.85rem;
+    border-radius: 0.6rem;
+  }
+}
+
+// Signed-in card at the bottom of the sidebar
+.user-card {
+  padding: 0.75rem;
+  border: 1px solid var(--a-border);
+  border-radius: 0.9rem;
+  background: var(--a-card);
+
+  &__avatar {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.6rem;
+    background: var(--a-primary-soft);
+    color: var(--a-primary);
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+}
+
+// Log out button
+.icon-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  background: var(--a-bg);
+  border: 1px solid var(--a-border);
+  border-radius: 0.6rem;
+  color: var(--a-text-2);
+
+  &:hover {
+    background: var(--a-primary-soft);
+    border-color: var(--a-primary);
+    color: var(--a-primary);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-item {
+    transition: none;
+  }
+}
