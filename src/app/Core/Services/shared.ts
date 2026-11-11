@@ -15,7 +15,7 @@ export class Shared {
   private activeRequests = 0;
   private routeLoading = false;
   private loading = new BehaviorSubject<boolean>(false);
-    private readonly secretkey = "qwerty321"
+  private readonly secretkey = 'qwerty321';
   $obsloading = this.loading.asObservable();
 
   private updateLoadingState() {
@@ -108,7 +108,6 @@ export class Shared {
     this.router.navigateByUrl('/');
   }
 
-  
   EnCrypt(value: string): string {
     return CryptoJS.AES.encrypt(value, this.secretkey).toString();
   }

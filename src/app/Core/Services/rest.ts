@@ -4,6 +4,8 @@ import { Shared } from './shared';
 import { ExperianceModel } from '../Models/Experiance';
 import { ProjectsModel } from '../Models/Projects';
 import { SkillsModel } from '../Models/Skills';
+import { AboutModel } from '../Models/About';
+import { HeroModel } from '../Models/Hero';
 
 @Injectable({ providedIn: 'root' })
 export class Rest {
@@ -52,12 +54,12 @@ export class Rest {
 
   deleteExperience(id: string): Promise<void> {
     this.sharedService.showLoading();
-    return runInInjectionContext(this.injector, () => remove(ref(this.db, `experience/${id}`))).finally(
-      () => this.sharedService.hideLoading(),
-    );
+    return runInInjectionContext(this.injector, () =>
+      remove(ref(this.db, `experience/${id}`)),
+    ).finally(() => this.sharedService.hideLoading());
   }
 
-   // ---- Projects ----
+  // ---- Projects ----
 
   getProjects(): Promise<DataSnapshot> {
     this.sharedService.showLoading();
@@ -66,7 +68,7 @@ export class Rest {
     );
   }
 
-    saveProjects(data: ProjectsModel, id?: string): Promise<void> {
+  saveProjects(data: ProjectsModel, id?: string): Promise<void> {
     this.sharedService.showLoading();
     return runInInjectionContext(this.injector, () => {
       const key = id ?? push(ref(this.db, 'projects')).key!;
@@ -74,14 +76,14 @@ export class Rest {
     }).finally(() => this.sharedService.hideLoading());
   }
 
-    deleteProjects(id: string): Promise<void> {
+  deleteProjects(id: string): Promise<void> {
     this.sharedService.showLoading();
-    return runInInjectionContext(this.injector, () => remove(ref(this.db, `projects/${id}`))).finally(
-      () => this.sharedService.hideLoading(),
-    );
+    return runInInjectionContext(this.injector, () =>
+      remove(ref(this.db, `projects/${id}`)),
+    ).finally(() => this.sharedService.hideLoading());
   }
 
- // ---- Skills ----
+  // ---- Skills ----
 
   getSkills(): Promise<DataSnapshot> {
     this.sharedService.showLoading();
@@ -90,7 +92,7 @@ export class Rest {
     );
   }
 
-      saveSkills(data: SkillsModel, id?: string): Promise<void> {
+  saveSkills(data: SkillsModel, id?: string): Promise<void> {
     this.sharedService.showLoading();
     return runInInjectionContext(this.injector, () => {
       const key = id ?? push(ref(this.db, 'skills')).key!;
@@ -98,11 +100,58 @@ export class Rest {
     }).finally(() => this.sharedService.hideLoading());
   }
 
-    deleteSkills(id: string): Promise<void> {
+  deleteSkills(id: string): Promise<void> {
     this.sharedService.showLoading();
     return runInInjectionContext(this.injector, () => remove(ref(this.db, `skills/${id}`))).finally(
       () => this.sharedService.hideLoading(),
     );
   }
 
+  // ---- About ----
+
+  getAbout(): Promise<DataSnapshot> {
+    this.sharedService.showLoading();
+    return runInInjectionContext(this.injector, () => get(ref(this.db, 'about'))).finally(() =>
+      this.sharedService.hideLoading(),
+    );
+  }
+
+  saveAbout(data: AboutModel, id?: string): Promise<void> {
+    this.sharedService.showLoading();
+    return runInInjectionContext(this.injector, () => {
+      const key = id ?? push(ref(this.db, 'about')).key!;
+      return set(ref(this.db, `about/${key}`), data);
+    }).finally(() => this.sharedService.hideLoading());
+  }
+
+  deleteAbout(id: string): Promise<void> {
+    this.sharedService.showLoading();
+    return runInInjectionContext(this.injector, () => remove(ref(this.db, `about/${id}`))).finally(
+      () => this.sharedService.hideLoading(),
+    );
+  }
+
+  // ---- Her Section ----
+
+  getHero(): Promise<DataSnapshot> {
+    this.sharedService.showLoading();
+    return runInInjectionContext(this.injector, () => get(ref(this.db, 'hero'))).finally(() =>
+      this.sharedService.hideLoading(),
+    );
+  }
+
+  saveHero(data: HeroModel, id?: string): Promise<void> {
+    this.sharedService.showLoading();
+    return runInInjectionContext(this.injector, () => {
+      const key = id ?? push(ref(this.db, 'hero')).key!;
+      return set(ref(this.db, `hero/${key}`), data);
+    }).finally(() => this.sharedService.hideLoading());
+  }
+
+  deleteHero(id: string): Promise<void> {
+    this.sharedService.showLoading();
+    return runInInjectionContext(this.injector, () => remove(ref(this.db, `hero/${id}`))).finally(
+      () => this.sharedService.hideLoading(),
+    );
+  }
 }

@@ -29,8 +29,10 @@
     "primeicons": "^8.0.2",
     "primeng": "^21.1.10",
     "rxjs": "~7.8.0",
+    "snow-effect": "^0.1.9",
     "tailwindcss": "^4.3.3",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "winter": "^1.0.3"
   },
   "devDependencies": {
     "@angular/build": "^21.2.18",

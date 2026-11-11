@@ -1,2 +1,28 @@
 /* You can add global styles to this file, and also import other style files */
 @use 'tailwindcss';
+
+snow-effect {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Keep dark inputs dark when the browser autofills them */
+.auth-form {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active,
+  input:autofill {
+    -webkit-text-fill-color: #f3f4f6 !important; /* text color */
+    caret-color: #f3f4f6;
+    -webkit-box-shadow: 0 0 0 1000px #2a2342 inset !important; /* covers the light fill */
+    box-shadow: 0 0 0 1000px #3929613a inset !important;
+    // border-radius: 0.75rem;
+    /* stops the browser's background from ever fading in */
+    transition:
+      background-color 600000s 0s,
+      color 600000s 0s;
+  }
+}
