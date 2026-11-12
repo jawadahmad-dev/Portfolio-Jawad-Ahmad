@@ -17,20 +17,32 @@ export class Nav {
   private readonly sharedService = inject(Shared);
 
   protected readonly links = [
+    { label: 'Hero & About', path: '/admin/about', icon: 'pi pi-user' },
     { label: 'Projects', path: '/admin/projects', icon: 'pi pi-th-large' },
     { label: 'Experience', path: '/admin/experience', icon: 'pi pi-briefcase' },
-    { label: 'Hero & About', path: '/admin/about', icon: 'pi pi-user' },
     { label: 'Skills', path: '/admin/skills', icon: 'pi pi-list' },
   ];
 
-  // async logout(): Promise<void> {
-  //   try {
-  //     await this.rest.Logout();
-  //     localStorage.removeItem('isLoggedIn');
-  //     this.router.navigate(['/login']);
-  //   } catch (err) {
-  //     console.error(err);
-  //     this.sharedService.toaster('error', 'Error', 'Could not log out. Please try again.');
-  //   }
-  // }
+  confirmLogout(): void {
+    this.sharedService.closeDialogConfirmation(
+      'LogOut Confirmation',
+      'Are you sure you want to log out?',
+      'pi pi-sign-out',
+      'Logout',
+      () => this.logout(),
+      'warn',
+    );
+  }
+
+  async logout(): Promise<void> {
+    try {
+      await this.rest.logOut();
+      localStorage.removeItem('isLoggedIn');
+      this.sharedService.toaster('success', 'Success', 'You have been logged out.');
+      this.router.navigate(['/login']);
+    } catch (err) {
+      console.error(err);
+      this.sharedService.toaster('error', 'Error', 'Could not log out. Please try again.');
+    }
+  }
 }

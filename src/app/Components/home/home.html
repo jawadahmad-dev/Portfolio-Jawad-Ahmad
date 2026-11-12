@@ -3,89 +3,54 @@
     <section
         class="mx-auto grid max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
         <div>
-            <h1 class="hero-title">I build dashboards and integrations for ERP teams.</h1>
+            <h1 class="hero-title">{{HeroData()?.title}}</h1>
             <p class="hero-lead">
-                I'm Jawad, a full-stack developer working with Angular, .NET and ERPNext. I design the screens and write
-                the
-                APIs behind them.
+                {{HeroData()?.description}}
             </p>
 
             <div class="mt-8 flex flex-wrap items-center gap-3">
                 <a pButton routerLink="/projects" class="btn-primary" label="View projects" icon="pi pi-th-large"></a>
-                <a pButton routerLink="/contact" class="btn-outline" label="Resume" icon="pi pi-send"></a>
+                @if (HeroData()?.resume) {
+                <button pButton type="button" class="btn-outline" label="Resume" icon="pi pi-download"
+                    (click)="downloadResume()"></button>
+                }
             </div>
 
             <ul class="mt-8 flex items-center gap-2">
-                @for (s of socials; track s.label) {
+                @if (AboutData()?.githubLink; as github) {
                 <li>
-                    <a class="social" [href]="s.href" target="_blank" rel="noopener noreferrer"
-                        [attr.aria-label]="s.label">
-                        <i [class]="s.icon" aria-hidden="true"></i>
+                    <a class="social" [href]="github" target="_blank" rel="noopener noreferrer" [attr.aria-label]="">
+                        <i class=" pi pi-github" aria-hidden="true"></i>
                     </a>
                 </li>
                 }
+                @if (AboutData()?.linkedinLink; as linkedin) {
+                <li>
+                    <a class="social" [href]="linkedin" target="_blank" rel="noopener noreferrer" [attr.aria-label]="">
+                        <i class=" pi pi-linkedin" aria-hidden="true"></i>
+                    </a>
+                </li>
+                }
+                @if (AboutData()?.email; as email) {
+                <li>
+                    <a class="social" [href]="'mailto:' + email" aria-label="Send me an email">
+                        <i class="pi pi-envelope" aria-hidden="true"></i>
+                    </a>
+                </li>
+                }
+
+
             </ul>
         </div>
-
-        <!-- Recent work panel, styled like the admin dashboard tables -->
+        @if (HeroData()?.image) {
         <div class="panel">
-            <h2 class="panel__head">Recent work</h2>
-            <ul>
-                @for (p of projects; track p.name) {
-                <li class="panel__row">
-                    <span class="icon-tile"><i [class]="p.icon" aria-hidden="true"></i></span>
-                    <div class="min-w-0 flex-1">
-                        <p class="item-title">{{ p.name }}</p>
-                        <p class="item-text">{{ p.note }}</p>
-                    </div>
-                    <p-tag [value]="p.tag"
-                        styleClass="!rounded-full !px-3 !py-1 !text-xs !font-medium !bg-[var(--home-primary-soft)] !text-[var(--home-primary)]" />
-                </li>
-                }
-            </ul>
-            <a routerLink="/projects" class="panel__foot">See all projects</a>
-        </div>
+            <img [src]="HeroData()?.image" alt="Hero image" class="panel__img" />
+        </div>}
     </section>
 
-    <!-- What I build -->
-    <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-        <div class="grid gap-8 border-t border-[var(--home-border)] pt-12 lg:grid-cols-[0.8fr_1.2fr]">
-            <h2 class="section-title">What I build</h2>
-            <ul class="divide-y divide-[var(--home-border)]">
-                @for (o of offers; track o.title) {
-                <li class="flex gap-4 py-5 first:pt-0 last:pb-0">
-                    <span class="icon-tile shrink-0"><i [class]="o.icon" aria-hidden="true"></i></span>
-                    <div>
-                        <h3 class="item-title">{{ o.title }}</h3>
-                        <p class="item-text">{{ o.text }}</p>
-                    </div>
-                </li>
-                }
-            </ul>
-        </div>
-    </section>
 
-    <!-- Tools -->
-    <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-        <div class="grid gap-8 border-t border-[var(--home-border)] pt-12 lg:grid-cols-[0.8fr_1.2fr]">
-            <h2 class="section-title">Tools I use</h2>
-            <dl class="divide-y divide-[var(--home-border)]">
-                @for (g of stack; track g.label) {
-                <div class="flex flex-col gap-3 py-5 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:gap-6">
-                    <dt class="item-text w-24 shrink-0">{{ g.label }}</dt>
-                    <dd class="flex flex-wrap gap-2">
-                        @for (item of g.items; track item) {
-                        <p-tag [value]="item"
-                            styleClass="!rounded-lg !px-3 !py-1 !text-sm !font-medium !bg-[var(--home-card)] !text-[var(--home-text)] !border !border-[var(--home-border)]" />
-                        }
-                    </dd>
-                </div>
-                }
-            </dl>
-        </div>
-    </section>
 
-    <!-- Closing call to action -->
+
     <section class="mx-auto max-w-6xl px-4 pb-20 pt-6 sm:px-6">
         <div class="cta">
             <div>

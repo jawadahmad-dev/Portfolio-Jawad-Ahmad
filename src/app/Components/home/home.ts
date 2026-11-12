@@ -1,7 +1,12 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
+import { Rest } from '../../Core/Services/rest';
+import { Shared } from '../../Core/Services/shared';
+import { HeroModel } from '../../Core/Models/Hero';
+import { downloadResume as saveResumeFile, isPdfDataUrl } from '../../Core/Services/Resume';
+import { AboutModel } from '../../Core/Models/About';
 
 interface Project {
   name: string;
@@ -28,29 +33,48 @@ interface StackGroup {
   styleUrl: './home.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Home {
-  // Replace the placeholder links with your own profiles.
-  protected readonly socials = [
-    { label: 'GitHub', icon: 'pi pi-github', href: 'https://github.com/' },
-    { label: 'LinkedIn', icon: 'pi pi-linkedin', href: 'https://www.linkedin.com/' },
-    { label: 'Email', icon: 'pi pi-envelope', href: 'mailto:jawad@example.com' },
-  ];
+export class Home implements OnInit {
+  private readonly restService = inject(Rest);
+  private readonly sharedService = inject(Shared);
 
-  protected readonly projects: Project[] = [
-    { name: 'SiteSync', note: 'Maps documents between ERPNext sites', tag: 'Admin app', icon: 'pi pi-sync' },
-    { name: 'PharmaCare', note: 'Pharmacy dashboard with light and dark themes', tag: 'Dashboard', icon: 'pi pi-heart' },
-    { name: 'Gate pass forms', note: 'Inward gate pass entry in right-to-left Urdu', tag: 'Forms', icon: 'pi pi-file-edit' },
-  ];
+  HeroData = signal<HeroModel | null>(null);
+  AboutData = signal<AboutModel | null>(null);
 
-  protected readonly offers: Offer[] = [
-    { title: 'Admin dashboards', text: 'Tables, charts and filters that stay fast with real data.', icon: 'pi pi-chart-line' },
-    { title: 'System integrations', text: 'Sync layers that move records between ERPNext sites and your own APIs.', icon: 'pi pi-sitemap' },
-    { title: 'Forms for real workflows', text: 'Validated, accessible forms, including right-to-left layouts.', icon: 'pi pi-list-check' },
-  ];
+  ngOnInit(): void {
+    this.GetHero();
+    this.GetAbout();
+  }
 
-  protected readonly stack: StackGroup[] = [
-    { label: 'Frontend', items: ['Angular', 'TypeScript', 'PrimeNG', 'Tailwind CSS', 'SCSS'] },
-    { label: 'Backend', items: ['.NET', 'REST APIs', 'Firebase'] },
-    { label: 'ERP', items: ['ERPNext', 'Frappe'] },
-  ];
+  async GetHero(): Promise<void> {
+    try {
+      const snapshot = await this.restService.getHero();
+      const value = snapshot.val() as Record<string, HeroModel> | null;
+      const hero = Object.values(value ?? {})[0] ?? null;
+      this.HeroData.set(hero);
+      console.log('Hero data loaded:', hero);
+    } catch (err) {
+      console.error(err);
+      this.sharedService.toaster('error', 'Error', 'Could not load the hero section.');
+    }
+  }
+
+  protected downloadResume(): void {
+    const resume = this.HeroData()?.resume;
+    if (!isPdfDataUrl(resume) || !saveResumeFile(resume, 'Jawad-Resume.pdf')) {
+      this.sharedService.toaster('error', 'Error', 'The resume is not available right now.');
+    }
+  }
+
+  private async GetAbout(): Promise<void> {
+    try {
+      const snapshot = await this.restService.getAbout();
+      const value = snapshot.val() as Record<string, AboutModel> | null;
+      const about = Object.values(value ?? {})[0] ?? null;
+      this.AboutData.set(about);
+      console.log('About data loaded:', about);
+    } catch (err) {
+      console.error(err);
+      this.sharedService.toaster('error', 'Error', 'Could not load the about section.');
+    }
+  }
 }

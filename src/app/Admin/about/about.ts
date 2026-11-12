@@ -1,5 +1,12 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
@@ -7,15 +14,27 @@ import { AboutModel } from '../../Core/Models/About';
 import { HeroModel } from '../../Core/Models/Hero';
 import { Rest } from '../../Core/Services/rest';
 import { Shared } from '../../Core/Services/shared';
+import {
+  MAX_RESUME_BYTES,
+  downloadResume,
+  isPdfDataUrl,
+  readFileAsDataUrl,
+} from '../../Core/Services/Resume';
+import { compressImage, dataUrlBytes } from '../../Core/Services/Image';
 
-/** Only http(s) links are accepted. */
-const URL_PATTERN = /^https?:\/\/\S+$/i;
+/** The hero image is resized first, so it should stay well below this. */
+const MAX_HERO_IMAGE_BYTES = 500 * 1024;
+
+/** The resume must be a base64 PDF data URL (set by the file upload, not typed). */
+const pdfDataUrl = (control: AbstractControl): ValidationErrors | null =>
+  !control.value || isPdfDataUrl(control.value) ? null : { pdf: true };
 
 /** Each section is stored as a single record, so take the first entry of the collection. */
 const firstEntry = <T>(value: Record<string, T> | null): [string, T] | null => {
   const entries = Object.entries(value ?? {});
   return entries.length ? entries[0] : null;
 };
+const URL_PATTERN = /^https?:\/\/\S+$/i;
 
 @Component({
   selector: 'app-about',
@@ -34,8 +53,11 @@ export class About implements OnInit {
   protected readonly loading = signal(true);
   protected readonly savingAbout = signal(false);
   protected readonly savingHero = signal(false);
-  protected readonly heroPreviewUrl = signal('');
-  protected readonly heroPreviewFailed = signal(false);
+  protected readonly heroImage = signal('');
+  protected readonly heroImageFailed = signal(false);
+  protected readonly processingImage = signal(false);
+  protected readonly imageSizeKb = signal(0);
+  protected readonly resumeSizeKb = signal(0);
 
   // Database keys of the saved records, so Update overwrites them instead of adding new ones
   private aboutId: string | null = null;
@@ -50,6 +72,9 @@ export class About implements OnInit {
   initAboutForm() {
     this.Aboutform = this.fb.group({
       details: ['', Validators.required],
+      githubLink: ['', Validators.pattern(URL_PATTERN)],
+      linkedinLink: ['', Validators.pattern(URL_PATTERN)],
+      email: ['', [Validators.required, Validators.email]],
     });
   }
 
@@ -58,20 +83,104 @@ export class About implements OnInit {
       title: ['', Validators.required],
       subtitle: ['', Validators.required],
       description: ['', Validators.required],
-      resume: ['', [Validators.required, Validators.pattern(URL_PATTERN)]],
-      image: ['', [Validators.required, Validators.pattern(URL_PATTERN)]],
+      resume: ['', [Validators.required, pdfDataUrl]],
+      image: [''],
     });
 
     this.HeroSectionForm.get('image')!.valueChanges.subscribe((value: string | null) => {
-      const url = (value ?? '').trim();
-      this.heroPreviewFailed.set(false);
-      this.heroPreviewUrl.set(URL_PATTERN.test(url) ? url : '');
+      const image = value ?? '';
+      this.heroImageFailed.set(false);
+      this.heroImage.set(image);
+      this.imageSizeKb.set(Math.round(dataUrlBytes(image) / 1024));
+    });
+
+    // Size of the stored PDF (base64 text is about 4/3 of the file size)
+    this.HeroSectionForm.get('resume')!.valueChanges.subscribe((value: string | null) => {
+      const text = value ?? '';
+      this.resumeSizeKb.set(
+        isPdfDataUrl(text) ? Math.round(((text.length - text.indexOf(',') - 1) * 3) / 4 / 1024) : 0,
+      );
     });
   }
 
   protected isInvalid(form: FormGroup, name: string): boolean {
     const c = form.get(name);
     return !!c && c.invalid && c.touched;
+  }
+
+  protected async onResumeSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = ''; // lets the same file be chosen again
+    if (!file) return;
+
+    if (file.type !== 'application/pdf') {
+      this.sharedService.toaster('error', 'Error', 'Please choose a PDF file.');
+      return;
+    }
+    if (file.size > MAX_RESUME_BYTES) {
+      this.sharedService.toaster('error', 'Error', 'The PDF must be smaller than 1 MB.');
+      return;
+    }
+
+    try {
+      const control = this.HeroSectionForm.get('resume')!;
+      control.setValue(await readFileAsDataUrl(file));
+      control.markAsDirty();
+      control.markAsTouched();
+    } catch (err) {
+      console.error(err);
+      this.sharedService.toaster('error', 'Error', 'Could not read that file.');
+    }
+  }
+
+  protected async onHeroImageSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = ''; // lets the same file be chosen again
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      this.sharedService.toaster('error', 'Error', 'Please choose an image file.');
+      return;
+    }
+
+    this.processingImage.set(true);
+    try {
+      const dataUrl = await compressImage(file);
+      if (dataUrlBytes(dataUrl) > MAX_HERO_IMAGE_BYTES) {
+        this.sharedService.toaster(
+          'error',
+          'Error',
+          'This image is still too large after resizing. Try a simpler one.',
+        );
+        return;
+      }
+      const control = this.HeroSectionForm.get('image')!;
+      control.setValue(dataUrl);
+      control.markAsDirty();
+      control.markAsTouched();
+    } catch (err) {
+      console.error(err);
+      this.sharedService.toaster('error', 'Error', `Could not read ${file.name}.`);
+    } finally {
+      this.processingImage.set(false);
+    }
+  }
+
+  protected removeHeroImage(): void {
+    const control = this.HeroSectionForm.get('image')!;
+    control.setValue('');
+    control.markAsDirty();
+    control.markAsTouched();
+  }
+
+  /** Downloads the stored PDF so you can check it before or after saving. */
+  protected checkResume(): void {
+    const resume = this.HeroSectionForm.get('resume')?.value as string;
+    if (!downloadResume(resume, 'resume.pdf')) {
+      this.sharedService.toaster('error', 'Error', 'The stored resume is not a valid PDF.');
+    }
   }
 
   private async loadContent(): Promise<void> {
@@ -84,7 +193,13 @@ export class About implements OnInit {
       const about = firstEntry(aboutSnap.val() as Record<string, AboutModel> | null);
       if (about) {
         this.aboutId = about[0];
-        this.Aboutform.reset({ details: about[1].details });
+        const a = about[1];
+        this.Aboutform.reset({
+          details: a.details,
+          githubLink: a.githubLink ?? '',
+          linkedinLink: a.linkedinLink ?? '',
+          email: a.email ?? '',
+        });
       }
 
       const hero = firstEntry(heroSnap.val() as Record<string, HeroModel> | null);
@@ -96,7 +211,7 @@ export class About implements OnInit {
           subtitle: h.subtitle,
           description: h.description,
           resume: h.resume,
-          image: h.image,
+          image: h.image ?? '',
         });
       }
     } catch (err) {
@@ -114,7 +229,13 @@ export class About implements OnInit {
       return;
     }
 
-    const payload: AboutModel = { details: this.Aboutform.getRawValue().details.trim() };
+    const v = this.Aboutform.getRawValue();
+    const payload: AboutModel = {
+      details: v.details.trim(),
+      githubLink: (v.githubLink ?? '').trim(),
+      linkedinLink: (v.linkedinLink ?? '').trim(),
+      email: v.email.trim(),
+    };
 
     this.savingAbout.set(true);
     try {
@@ -142,7 +263,7 @@ export class About implements OnInit {
       subtitle: v.subtitle.trim(),
       description: v.description.trim(),
       resume: v.resume.trim(),
-      image: v.image.trim(),
+      image: (v.image ?? '').trim(),
     };
 
     this.savingHero.set(true);

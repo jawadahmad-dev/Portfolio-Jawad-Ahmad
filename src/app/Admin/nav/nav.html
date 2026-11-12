@@ -26,7 +26,8 @@
                     <p class="text-sm font-semibold leading-tight">Admin</p>
                     <a routerLink="/" class="text-xs text-[var(--a-text-2)] hover:text-[var(--a-primary)]">View site</a>
                 </div>
-                <button pButton type="button" icon="pi pi-sign-out" class="icon-btn" aria-label="Log out"></button>
+                <button pButton type="button" icon="pi pi-sign-out" class="icon-btn" aria-label="Log out"
+                    (click)="confirmLogout()"></button>
             </div>
         </div>
     </aside>
@@ -38,7 +39,8 @@
                 <span class="brand__mark brand__mark--sm" aria-hidden="true">JW</span>
                 <span class="font-bold">Portfolio admin</span>
             </a>
-            <button pButton type="button" icon="pi pi-sign-out" class="icon-btn" aria-label="Log out"></button>
+            <button pButton type="button" icon="pi pi-sign-out" class="icon-btn" aria-label="Log out"
+                (click)="confirmLogout()"></button>
         </div>
         <nav class="flex gap-1 overflow-x-auto px-3 pb-3" aria-label="Admin">
             @for (l of links; track l.path) {

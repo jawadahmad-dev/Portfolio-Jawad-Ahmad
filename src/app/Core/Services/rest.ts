@@ -13,6 +13,8 @@ export class Rest {
   private readonly injector = inject(Injector);
   private readonly sharedService = inject(Shared);
 
+  //-------------Aut-----------
+
   Login(data: { email: string; loggedIn: boolean }): Promise<void> {
     this.sharedService.showLoading();
     return runInInjectionContext(this.injector, () => set(ref(this.db, 'auth'), data)).finally(() =>
@@ -32,6 +34,13 @@ export class Rest {
     return runInInjectionContext(this.injector, () => get(ref(this.db, 'users'))).finally(() =>
       this.sharedService.hideLoading(),
     );
+  }
+
+  logOut(): Promise<void> {
+    this.sharedService.showLoading();
+    return runInInjectionContext(this.injector, () =>
+      set(ref(this.db, 'auth'), { email: '', loggedIn: false }),
+    ).finally(() => this.sharedService.hideLoading());
   }
 
   // ---- Experience ----

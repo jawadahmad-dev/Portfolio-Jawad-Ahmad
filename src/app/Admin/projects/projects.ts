@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -7,9 +7,14 @@ import { TextareaModule } from 'primeng/textarea';
 import { ProjectsModel } from '../../Core/Models/Projects';
 import { Rest } from '../../Core/Services/rest';
 import { Shared } from '../../Core/Services/shared';
+import { compressImage, dataUrlBytes } from '../../Core/Services/Image';
 
 /** Only http(s) links are accepted. An empty value passes, so optional fields stay optional. */
 const URL_PATTERN = /^https?:\/\/\S+$/i;
+
+const MAX_IMAGES = 6;
+/** All images of one project together (after resizing). */
+const MAX_TOTAL_BYTES = 1024 * 1024;
 
 @Component({
   selector: 'app-projects',
@@ -24,16 +29,20 @@ export class Projects implements OnInit {
 
   projectsForm!: FormGroup;
 
+  protected readonly maxImages = MAX_IMAGES;
   protected readonly projects = signal<ProjectsModel[]>([]);
   protected readonly loading = signal(false);
   protected readonly saving = signal(false);
+  protected readonly processing = signal(false);
   protected readonly editingId = signal<string | null>(null);
   protected readonly deletingId = signal<string | null>(null);
 
-  // Image preview in the form, and cards whose image failed to load
-  protected readonly previewUrl = signal('');
-  protected readonly previewFailed = signal(false);
+  // Images currently in the form, and project cards whose cover failed to load
+  protected readonly formImages = signal<string[]>([]);
   protected readonly brokenImages = signal<ReadonlySet<string>>(new Set());
+  protected readonly totalKb = computed(() =>
+    Math.round(this.totalBytes(this.formImages()) / 1024),
+  );
 
   ngOnInit(): void {
     this.initProjectsForm();
@@ -44,16 +53,14 @@ export class Projects implements OnInit {
     this.projectsForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
-      image: ['', [Validators.required, Validators.pattern(URL_PATTERN)]],
+      images: [[] as string[], Validators.required],
       liveLink: ['', Validators.pattern(URL_PATTERN)],
       githubLink: ['', [Validators.required, Validators.pattern(URL_PATTERN)]],
       technologies: ['', Validators.required],
     });
 
-    this.projectsForm.get('image')!.valueChanges.subscribe((value: string | null) => {
-      const url = (value ?? '').trim();
-      this.previewFailed.set(false);
-      this.previewUrl.set(URL_PATTERN.test(url) ? url : '');
+    this.projectsForm.get('images')!.valueChanges.subscribe((value: string[] | null) => {
+      this.formImages.set(value ?? []);
     });
   }
 
@@ -69,6 +76,15 @@ export class Projects implements OnInit {
       .filter(Boolean);
   }
 
+  /** Images of a project. Projects saved before multi-image support only have a single link. */
+  protected imagesOf(p: ProjectsModel): string[] {
+    return p.images?.length ? p.images : p.image ? [p.image] : [];
+  }
+
+  protected cover(p: ProjectsModel): string {
+    return this.imagesOf(p)[0] ?? '';
+  }
+
   protected isBroken(id: string | undefined): boolean {
     return !!id && this.brokenImages().has(id);
   }
@@ -76,6 +92,78 @@ export class Projects implements OnInit {
   protected markBroken(id: string | undefined): void {
     if (!id) return;
     this.brokenImages.update((set) => new Set(set).add(id));
+  }
+
+  private totalBytes(images: string[]): number {
+    return images.reduce((sum, img) => sum + dataUrlBytes(img), 0);
+  }
+
+  private setImages(images: string[]): void {
+    const control = this.projectsForm.get('images')!;
+    control.setValue(images);
+    control.markAsDirty();
+    control.markAsTouched();
+  }
+
+  protected async onImagesSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const files = Array.from(input.files ?? []);
+    input.value = ''; // lets the same file be chosen again
+    if (!files.length) return;
+
+    const room = MAX_IMAGES - this.formImages().length;
+    if (room <= 0) {
+      this.sharedService.toaster('error', 'Error', `You can add up to ${MAX_IMAGES} images.`);
+      return;
+    }
+    if (files.length > room) {
+      this.sharedService.toaster(
+        'error',
+        'Error',
+        `Only the first ${room} images were added (limit is ${MAX_IMAGES}).`,
+      );
+    }
+
+    this.processing.set(true);
+    const added: string[] = [];
+    try {
+      for (const file of files.slice(0, room)) {
+        if (!file.type.startsWith('image/')) {
+          this.sharedService.toaster('error', 'Error', `${file.name} is not an image.`);
+          continue;
+        }
+        try {
+          added.push(await compressImage(file));
+        } catch (err) {
+          console.error(err);
+          this.sharedService.toaster('error', 'Error', `Could not read ${file.name}.`);
+        }
+      }
+    } finally {
+      this.processing.set(false);
+    }
+
+    if (!added.length) return;
+
+    const next = [...this.formImages(), ...added];
+    if (this.totalBytes(next) > MAX_TOTAL_BYTES) {
+      this.sharedService.toaster(
+        'error',
+        'Error',
+        'These images are too large together (limit is about 1 MB). Remove one or choose smaller screenshots.',
+      );
+      return;
+    }
+    this.setImages(next);
+  }
+
+  protected removeImage(index: number): void {
+    this.setImages(this.formImages().filter((_, i) => i !== index));
+  }
+
+  protected makeCover(index: number): void {
+    const images = this.formImages();
+    this.setImages([images[index], ...images.filter((_, i) => i !== index)]);
   }
 
   async loadProjects(): Promise<void> {
@@ -103,7 +191,7 @@ export class Projects implements OnInit {
     this.projectsForm.reset({
       title: project.title,
       description: project.description,
-      image: project.image,
+      images: this.imagesOf(project),
       liveLink: project.liveLink ?? '',
       githubLink: project.githubLink,
       technologies: project.technologies,
@@ -119,7 +207,7 @@ export class Projects implements OnInit {
     this.projectsForm.reset({
       title: '',
       description: '',
-      image: '',
+      images: [],
       liveLink: '',
       githubLink: '',
       technologies: '',
@@ -137,7 +225,7 @@ export class Projects implements OnInit {
     const payload: ProjectsModel = {
       title: v.title.trim(),
       description: v.description.trim(),
-      image: v.image.trim(),
+      images: v.images,
       liveLink: v.liveLink.trim(),
       githubLink: v.githubLink.trim(),
       // "angular,  .NET" -> "angular, .NET"
