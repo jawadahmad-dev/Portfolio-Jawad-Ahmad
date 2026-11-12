@@ -1,164 +1,74 @@
-// Palette taken from the SiteSync admin dashboard
 :host {
-  --nav-bg: rgba(14, 54, 58, 0.767);
-  --nav-bg-solid: #0a1a20;
-  --nav-card: #0c242c;
-  --nav-border: #16323a;
-  --nav-text: #e7f2f3;
-  --nav-text-2: #9bb4b9;
-  --nav-primary: #2dd4bf;
-  --nav-primary-soft: rgba(45, 212, 191, 0.12);
-  --nav-primary-ink: #04201c;
-
-  // The host is the sticky element so it can travel the full height of the page
   display: block;
-  position: sticky;
-  top: 0;
-  z-index: 50;
+  min-height: 100vh;
 }
 
-.nav {
-  background: var(--nav-bg);
-  border-bottom: 1px solid transparent;
+.nav-header {
+  background: rgba(6, 19, 25, 0.76);
+  border-bottom: 1px solid rgba(22, 50, 58, 0.4);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  transition:
-    border-color 0.2s ease,
-    background-color 0.2s ease;
 
   &--scrolled {
-    background: var(--nav-bg-solid);
-    border-bottom-color: var(--nav-border);
+    background: rgba(6, 19, 25, 0.92);
+    border-bottom-color: rgba(45, 212, 191, 0.26);
+    box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.8);
   }
 }
 
-// Brand
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.65rem;
-  border-radius: 0.75rem;
-  color: var(--nav-text);
-  text-decoration: none;
+.brand-badge {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 18px 35px -18px rgba(45, 212, 191, 0.9);
+}
 
-  &__mark {
-    display: grid;
-    place-items: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 0.75rem;
-    background: var(--nav-primary);
-    color: var(--nav-primary-ink);
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-  }
-
-  &__name {
-    font-size: 1.05rem;
-    font-weight: 700;
+.nav-item {
+  &--active {
+    color: #2dd4bf !important;
+    background: rgba(45, 212, 191, 0.12) !important;
+    box-shadow: inset 0 0 0 1px rgba(45, 212, 191, 0.12);
+    font-weight: 600;
   }
 }
 
-// Links
-.nav-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.85rem;
-  border-radius: 0.65rem;
-  color: var(--nav-text-2);
-  font-size: 0.92rem;
-  font-weight: 500;
-  text-decoration: none;
+.mobile-item {
+  &--active {
+    color: #2dd4bf !important;
+    background: rgba(45, 212, 191, 0.14) !important;
+    font-weight: 600;
+  }
+}
+
+.cta-btn,
+.nav-item,
+.mobile-item,
+.brand-link {
   transition:
-    color 0.15s ease,
-    background-color 0.15s ease;
-
-  i {
-    font-size: 0.85rem;
-  }
-
-  &:hover {
-    color: var(--nav-text);
-    background: rgba(255, 255, 255, 0.04);
-  }
-
-  &--active,
-  &--active:hover {
-    color: var(--nav-primary);
-    background: var(--nav-primary-soft);
-  }
-
-  &--block {
-    display: flex;
-    padding: 0.75rem 0.9rem;
-    font-size: 1rem;
-  }
+    transform 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease;
 }
 
-// Call to action (pButton on an anchor)
-.nav-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.55rem 1.1rem;
-  border: none;
-  border-radius: 0.75rem;
-  background: var(--nav-primary);
-  color: var(--nav-primary-ink);
-  font-size: 0.92rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: filter 0.15s ease;
-
-  &:hover {
-    filter: brightness(1.08);
-    background: var(--nav-primary);
-    color: var(--nav-primary-ink);
-  }
-
-  &--block {
-    width: 100%;
-    padding: 0.8rem 1rem;
-  }
+.cta-btn:hover,
+.nav-item:hover,
+.mobile-item:hover,
+.brand-link:hover {
+  transform: translateY(-1px);
 }
 
-// Mobile panel
-.mobile-panel {
-  background: var(--nav-bg-solid);
-  border-bottom: 1px solid var(--nav-border);
-  animation: panel-drop 0.18s ease-out;
+.mobile-drawer {
+  animation: slideDown 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes panel-drop {
+@keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-6px);
+    transform: translateY(-8px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-// Keyboard focus
-.brand:focus-visible,
-.nav-link:focus-visible,
-.nav-cta:focus-visible {
-  outline: 2px solid var(--nav-primary);
-  outline-offset: 2px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .nav,
-  .nav-link,
-  .nav-cta {
-    transition: none;
-  }
-
-  .mobile-panel {
-    animation: none;
   }
 }

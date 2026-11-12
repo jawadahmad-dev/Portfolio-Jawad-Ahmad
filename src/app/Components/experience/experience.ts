@@ -1,8 +1,11 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { ExperianceModel } from '../../Core/Models/Experiance';
+import { HeroModel } from '../../Core/Models/Hero';
 import { Shared } from '../../Core/Services/shared';
 import { Rest } from '../../Core/Services/rest';
+import { downloadResume as saveResumeFile, isPdfDataUrl } from '../../Core/Services/Resume';
 
 /** "2024-03" -> total month number, so two dates can be subtracted */
 const monthIndex = (value: string | undefined): number | null => {
@@ -23,14 +26,17 @@ const formatMonth = (value: string | undefined): string => {
 
 @Component({
   selector: 'app-experience',
-  imports: [TagModule],
+  imports: [ButtonModule, TagModule],
   templateUrl: './experience.html',
   styleUrl: './experience.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Experience implements OnInit {
   private readonly restService = inject(Rest);
   private readonly sharedService = inject(Shared);
+
   experiences = signal<ExperianceModel[]>([]);
+  hero = signal<HeroModel | null>(null);
   protected readonly loading = signal(true);
 
   ngOnInit(): void {
@@ -38,13 +44,21 @@ export class Experience implements OnInit {
   }
 
   async loadExperiences(): Promise<void> {
+    this.loading.set(true);
     try {
-      const snapshot = await this.restService.getExperiences();
-      const value = snapshot.val() as Record<string, ExperianceModel> | null;
+      const [expSnap, heroSnap] = await Promise.all([
+        this.restService.getExperiences(),
+        this.restService.getHero(),
+      ]);
+
+      const value = expSnap.val() as Record<string, ExperianceModel> | null;
       const items = Object.entries(value ?? {})
         .map(([id, item]) => ({ ...item, id }))
         .sort((a, b) => (b.startDate ?? '').localeCompare(a.startDate ?? '')); // newest first
       this.experiences.set(items);
+
+      const heroVal = heroSnap.val() as Record<string, HeroModel> | null;
+      this.hero.set(Object.values(heroVal ?? {})[0] ?? null);
     } catch (err) {
       console.error(err);
       this.sharedService.toaster('error', 'Error', 'Could not load your experience.');
@@ -59,7 +73,7 @@ export class Experience implements OnInit {
   }
 
   protected period(e: ExperianceModel): string {
-    return `${formatMonth(e.startDate)} to ${e.endDate ? formatMonth(e.endDate) : 'Present'}`;
+    return `${formatMonth(e.startDate)} - ${e.endDate ? formatMonth(e.endDate) : 'Present'}`;
   }
 
   /** "1 yr 4 mos", counting both the first and last month. */
@@ -77,5 +91,12 @@ export class Experience implements OnInit {
     if (years) parts.push(`${years} ${years === 1 ? 'yr' : 'yrs'}`);
     if (months) parts.push(`${months} ${months === 1 ? 'mo' : 'mos'}`);
     return parts.join(' ');
+  }
+
+  protected downloadResume(): void {
+    const resume = this.hero()?.resume;
+    if (!isPdfDataUrl(resume) || !saveResumeFile(resume, 'Jawad-Resume.pdf')) {
+      this.sharedService.toaster('error', 'Error', 'The resume is not available right now.');
+    }
   }
 }

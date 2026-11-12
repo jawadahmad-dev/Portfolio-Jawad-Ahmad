@@ -1,6 +1,11 @@
-import { ChangeDetectionStrategy, Component, HostListener, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
+import { Rest } from '../../Core/Services/rest';
+import { Shared } from '../../Core/Services/shared';
+import { AboutModel } from '../../Core/Models/About';
+import { HeroModel } from '../../Core/Models/Hero';
+import { downloadResume as saveResumeFile, isPdfDataUrl } from '../../Core/Services/Resume';
 
 interface NavLink {
   label: string;
@@ -15,26 +20,54 @@ interface NavLink {
   templateUrl: './nav.html',
   styleUrl: './nav.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(window:scroll)': 'onScroll()',
+    '(document:keydown.escape)': 'onEscape()',
+  },
 })
-export class Nav {
-  // Change the paths to match your app.routes.ts.
-  // Contact is the call-to-action button, so it is not in this list.
+export class Nav implements OnInit {
+  private readonly restService = inject(Rest);
+  private readonly sharedService = inject(Shared);
+
   protected readonly links: NavLink[] = [
     { label: 'Home', path: '/', icon: 'pi pi-home', exact: true },
     { label: 'About', path: '/about', icon: 'pi pi-user' },
+    { label: 'Skills', path: '/skills', icon: 'pi pi-bolt' },
     { label: 'Experience', path: '/experience', icon: 'pi pi-briefcase' },
     { label: 'Projects', path: '/projects', icon: 'pi pi-th-large' },
   ];
 
   protected readonly menuOpen = signal(false);
   protected readonly scrolled = signal(false);
+  protected readonly aboutData = signal<AboutModel | null>(null);
+  protected readonly heroData = signal<HeroModel | null>(null);
+  protected readonly currentYear = 2026;
 
-  @HostListener('window:scroll')
-  onScroll(): void {
-    this.scrolled.set(window.scrollY > 8);
+  ngOnInit(): void {
+    this.loadNavData();
   }
 
-  @HostListener('document:keydown.escape')
+  private async loadNavData(): Promise<void> {
+    try {
+      const [aboutSnap, heroSnap] = await Promise.all([
+        this.restService.getAbout(),
+        this.restService.getHero(),
+      ]);
+      const aboutVal = aboutSnap.val() as Record<string, AboutModel> | null;
+      const heroVal = heroSnap.val() as Record<string, HeroModel> | null;
+      this.aboutData.set(Object.values(aboutVal ?? {})[0] ?? null);
+      this.heroData.set(Object.values(heroVal ?? {})[0] ?? null);
+    } catch (err) {
+      console.warn('Could not load navigation metadata:', err);
+    }
+  }
+
+  onScroll(): void {
+    if (typeof window !== 'undefined') {
+      this.scrolled.set(window.scrollY > 12);
+    }
+  }
+
   onEscape(): void {
     this.closeMenu();
   }
@@ -45,5 +78,18 @@ export class Nav {
 
   closeMenu(): void {
     this.menuOpen.set(false);
+  }
+
+  scrollToTop(): void {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  downloadResume(): void {
+    const resume = this.heroData()?.resume;
+    if (!isPdfDataUrl(resume) || !saveResumeFile(resume, 'Jawad-Resume.pdf')) {
+      this.sharedService.toaster('warn', 'Notice', 'Resume file is not available right now.');
+    }
   }
 }

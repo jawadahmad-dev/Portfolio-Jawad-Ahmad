@@ -1,58 +1,280 @@
-<header class="nav" [class.nav--scrolled]="scrolled()">
-    <nav class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6" aria-label="Main">
-        <!-- Brand -->
-        <a routerLink="/" class="brand" aria-label="Jawad, home" (click)="closeMenu()">
-            <span class="brand__mark" aria-hidden="true">JW</span>
-            <span class="brand__name">Jawad</span>
+<div class="site-wrapper flex min-h-screen flex-col bg-[#061319] text-[#e7f2f3]">
+  <!-- Header / Navigation Bar -->
+  <header
+    class="nav-header sticky top-0 z-50 transition-all duration-300"
+    [class.nav-header--scrolled]="scrolled()"
+  >
+    <nav
+      class="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
+      aria-label="Main Navigation"
+    >
+      <!-- Brand Logo -->
+      <a
+        routerLink="/"
+        class="brand-link group flex items-center gap-3 transition-transform hover:scale-[1.02]"
+        aria-label="Jawad Ahmad - Return to Homepage"
+        (click)="closeMenu()"
+      >
+        <span
+          class="brand-badge flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#2dd4bf] to-[#0ea5e9] font-bold text-[#04201c] shadow-lg shadow-[#2dd4bf]/20 transition-all group-hover:shadow-[#2dd4bf]/40"
+        >
+          JW
+        </span>
+        <div class="flex flex-col">
+          <span
+            class="font-bold tracking-tight text-white transition-colors group-hover:text-[#2dd4bf]"
+            >Jawad Ahmad</span
+          >
+          <span class="text-[11px] font-medium tracking-wider uppercase text-[#9bb4b9]"
+            >Full-Stack Dev</span
+          >
+        </div>
+      </a>
+
+      <!-- Desktop Links -->
+      <ul class="hidden items-center gap-1.5 md:flex" role="menubar">
+        @for (link of links; track link.path) {
+          <li role="none">
+            <a
+              [routerLink]="link.path"
+              routerLinkActive="nav-item--active"
+              [routerLinkActiveOptions]="{ exact: link.exact ?? false }"
+              class="nav-item flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm font-medium text-[#9bb4b9] transition-all hover:bg-white/5 hover:text-white"
+              role="menuitem"
+            >
+              <i [class]="link.icon" class="text-xs opacity-75" aria-hidden="true"></i>
+              <span>{{ link.label }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-3">
+        @if (heroData()?.resume) {
+          <button
+            type="button"
+            (click)="downloadResume()"
+            class="hidden items-center gap-2 rounded-xl border border-[#16323a] bg-[#0a1c22]/60 px-3.5 py-2 text-xs font-semibold text-[#e7f2f3] backdrop-blur-sm transition-all hover:border-[#2dd4bf] hover:bg-[#2dd4bf]/10 hover:text-[#2dd4bf] lg:inline-flex"
+            aria-label="Download CV Resume"
+          >
+            <i class="pi pi-download text-xs" aria-hidden="true"></i>
+            <span>Resume</span>
+          </button>
+        }
+
+        <a
+          routerLink="/contact"
+          class="cta-btn hidden items-center gap-2 rounded-xl bg-gradient-to-r from-[#2dd4bf] to-[#14b8a6] px-4 py-2 text-sm font-semibold text-[#04201c] shadow-md shadow-[#2dd4bf]/20 transition-all hover:brightness-110 hover:shadow-lg hover:shadow-[#2dd4bf]/30 sm:inline-flex"
+          aria-label="Navigate to Contact Page"
+        >
+          <i class="pi pi-send text-xs" aria-hidden="true"></i>
+          <span>Contact</span>
         </a>
 
-        <!-- Desktop links -->
-        <ul class="hidden items-center gap-1 md:flex">
-            @for (link of links; track link.path) {
-            <li>
-                <a class="nav-link" [routerLink]="link.path" routerLinkActive="nav-link--active"
-                    ariaCurrentWhenActive="page" [routerLinkActiveOptions]="{ exact: link.exact ?? false }">
-                    <i [class]="link.icon" aria-hidden="true"></i>
-                    <span>{{ link.label }}</span>
-                </a>
-            </li>
-            }
-        </ul>
-
-        <div class="flex items-center gap-2">
-            <!-- Desktop call to action -->
-            <div class="hidden md:block">
-                <a pButton routerLink="/contact" class="nav-cta" label="Contact me" icon="pi pi-send"></a>
-            </div>
-
-            <!-- Mobile menu toggle -->
-            <p-button class="md:hidden" [icon]="menuOpen() ? 'pi pi-times' : 'pi pi-bars'"
-                [ariaLabel]="menuOpen() ? 'Close menu' : 'Open menu'" (onClick)="toggleMenu()"
-                styleClass="!h-10 !w-10 !rounded-xl !border !border-[var(--nav-border)] !bg-[var(--nav-card)] !text-[var(--nav-text)]" />
-        </div>
+        <!-- Mobile Menu Toggle Button -->
+        <button
+          type="button"
+          (click)="toggleMenu()"
+          [attr.aria-expanded]="menuOpen()"
+          aria-label="Toggle navigation menu"
+          class="flex h-10 w-10 items-center justify-center rounded-xl border border-[#16323a] bg-[#0a1c22] text-[#e7f2f3] transition-colors hover:border-[#2dd4bf] md:hidden"
+        >
+          <i
+            [class]="menuOpen() ? 'pi pi-times' : 'pi pi-bars'"
+            class="text-base"
+            aria-hidden="true"
+          ></i>
+        </button>
+      </div>
     </nav>
 
-    <!-- Mobile panel -->
+    <!-- Mobile Navigation Drawer -->
     @if (menuOpen()) {
-    <div class="mobile-panel md:hidden">
-        <ul class="flex flex-col gap-1 p-3">
-            @for (link of links; track link.path) {
-            <li>
-                <a class="nav-link nav-link--block" [routerLink]="link.path" routerLinkActive="nav-link--active"
-                    ariaCurrentWhenActive="page" [routerLinkActiveOptions]="{ exact: link.exact ?? false }"
-                    (click)="closeMenu()">
-                    <i [class]="link.icon" aria-hidden="true"></i>
-                    <span>{{ link.label }}</span>
-                </a>
+      <div
+        class="mobile-drawer border-b border-[#16323a] bg-[#081921]/95 px-4 pt-3 pb-6 backdrop-blur-xl md:hidden"
+      >
+        <ul class="flex flex-col gap-1.5" role="menu">
+          @for (link of links; track link.path) {
+            <li role="none">
+              <a
+                [routerLink]="link.path"
+                routerLinkActive="mobile-item--active"
+                [routerLinkActiveOptions]="{ exact: link.exact ?? false }"
+                (click)="closeMenu()"
+                class="mobile-item flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium text-[#9bb4b9] transition-all hover:bg-white/5 hover:text-white"
+                role="menuitem"
+              >
+                <i [class]="link.icon" class="text-sm text-[#2dd4bf]" aria-hidden="true"></i>
+                <span>{{ link.label }}</span>
+              </a>
             </li>
-            }
+          }
         </ul>
-        <div class="px-3 pb-3">
-            <a pButton routerLink="/contact" class="nav-cta nav-cta--block" label="Contact me" icon="pi pi-send"
-                (click)="closeMenu()"></a>
-        </div>
-    </div>
-    }
-</header>
 
-<router-outlet />
+        <div class="mt-4 flex flex-col gap-2.5 border-t border-[#16323a] pt-4">
+          @if (heroData()?.resume) {
+            <button
+              type="button"
+              (click)="downloadResume(); closeMenu()"
+              class="flex w-full items-center justify-center gap-2 rounded-xl border border-[#16323a] bg-[#0a1c22] py-2.5 text-sm font-semibold text-[#e7f2f3] transition-all hover:border-[#2dd4bf] hover:text-[#2dd4bf]"
+            >
+              <i class="pi pi-download text-xs" aria-hidden="true"></i>
+              <span>Download Resume</span>
+            </button>
+          }
+          <a
+            routerLink="/contact"
+            (click)="closeMenu()"
+            class="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2dd4bf] py-2.5 text-sm font-semibold text-[#04201c] transition-all hover:brightness-110"
+          >
+            <i class="pi pi-send text-xs" aria-hidden="true"></i>
+            <span>Get in Touch</span>
+          </a>
+        </div>
+      </div>
+    }
+  </header>
+
+  <!-- Public Content Area -->
+  <main id="main-content" class="flex-1">
+    <router-outlet />
+  </main>
+
+  <!-- Comprehensive Global Footer -->
+  <footer class="footer-section border-t border-[#16323a] bg-[#050f14] pt-16 pb-12 text-[#9bb4b9]">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+        <!-- Col 1: Identity & Pitch -->
+        <div class="space-y-4 lg:col-span-1">
+          <div class="flex items-center gap-3">
+            <span
+              class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#2dd4bf] to-[#0ea5e9] text-xs font-bold text-[#04201c]"
+            >
+              JW
+            </span>
+            <span class="text-lg font-bold text-white">Jawad Ahmad</span>
+          </div>
+          <p class="text-sm leading-relaxed text-[#9bb4b9]">
+            Full-Stack Software Engineer specializing in modern Angular, ASP.NET Core, resilient
+            cloud architecture, and high-impact web applications.
+          </p>
+          <div
+            class="inline-flex items-center gap-2 rounded-full border border-[#2dd4bf]/30 bg-[#2dd4bf]/10 px-3 py-1 text-xs font-medium text-[#2dd4bf]"
+          >
+            <span class="h-2 w-2 rounded-full bg-[#2dd4bf] animate-ping" aria-hidden="true"></span>
+            <span>Available for new projects</span>
+          </div>
+        </div>
+
+        <!-- Col 2: Navigation Links -->
+        <div class="space-y-3">
+          <h2 class="text-sm font-semibold uppercase tracking-wider text-white">Navigation</h2>
+          <ul class="space-y-2 text-sm">
+            @for (l of links; track l.path) {
+              <li>
+                <a [routerLink]="l.path" class="transition-colors hover:text-[#2dd4bf]">{{
+                  l.label
+                }}</a>
+              </li>
+            }
+            <li>
+              <a routerLink="/contact" class="transition-colors hover:text-[#2dd4bf]">Contact</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Tech Stack Highlights -->
+        <div class="space-y-3">
+          <h2 class="text-sm font-semibold uppercase tracking-wider text-white">Core Stack</h2>
+          <ul class="space-y-1.5 text-sm">
+            <li class="flex items-center gap-2">
+              <i class="pi pi-check text-xs text-[#2dd4bf]" aria-hidden="true"></i>
+              <span>Angular 21 &amp; TypeScript</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <i class="pi pi-check text-xs text-[#2dd4bf]" aria-hidden="true"></i>
+              <span>ASP.NET Core &amp; EF Core</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <i class="pi pi-check text-xs text-[#2dd4bf]" aria-hidden="true"></i>
+              <span>TailwindCSS &amp; PrimeNG</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <i class="pi pi-check text-xs text-[#2dd4bf]" aria-hidden="true"></i>
+              <span>PostgreSQL &amp; Firebase</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Connect & Socials -->
+        <div class="space-y-4">
+          <h2 class="text-sm font-semibold uppercase tracking-wider text-white">Connect</h2>
+          <p class="text-sm text-[#9bb4b9]">
+            Feel free to reach out for collaborations, inquiries, or tech conversations.
+          </p>
+          <div class="flex items-center gap-2.5">
+            @if (aboutData()?.githubLink; as github) {
+              <a
+                [href]="github"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub Profile"
+                class="flex h-10 w-10 items-center justify-center rounded-xl border border-[#16323a] bg-[#0a1c22] text-[#e7f2f3] transition-all hover:border-[#2dd4bf] hover:bg-[#2dd4bf]/10 hover:text-[#2dd4bf]"
+              >
+                <i class="pi pi-github" aria-hidden="true"></i>
+              </a>
+            }
+            @if (aboutData()?.linkedinLink; as linkedin) {
+              <a
+                [href]="linkedin"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn Profile"
+                class="flex h-10 w-10 items-center justify-center rounded-xl border border-[#16323a] bg-[#0a1c22] text-[#e7f2f3] transition-all hover:border-[#2dd4bf] hover:bg-[#2dd4bf]/10 hover:text-[#2dd4bf]"
+              >
+                <i class="pi pi-linkedin" aria-hidden="true"></i>
+              </a>
+            }
+            @if (aboutData()?.email; as email) {
+              <a
+                [href]="'mailto:' + email"
+                aria-label="Email Jawad"
+                class="flex h-10 w-10 items-center justify-center rounded-xl border border-[#16323a] bg-[#0a1c22] text-[#e7f2f3] transition-all hover:border-[#2dd4bf] hover:bg-[#2dd4bf]/10 hover:text-[#2dd4bf]"
+              >
+                <i class="pi pi-envelope" aria-hidden="true"></i>
+              </a>
+            }
+            <a
+              routerLink="/login"
+              aria-label="Admin Portal"
+              class="flex h-10 w-10 items-center justify-center rounded-xl border border-[#16323a] bg-[#0a1c22] text-[#9bb4b9] transition-all hover:border-gray-500 hover:text-white"
+              title="Admin Portal"
+            >
+              <i class="pi pi-lock text-xs" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Divider & Bottom Credits -->
+      <div
+        class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[#16323a]/60 pt-8 sm:flex-row text-xs text-[#9bb4b9]"
+      >
+        <p>&copy; {{ currentYear }} Jawad Ahmad. All rights reserved.</p>
+        <div class="flex items-center gap-6">
+          <span>Crafted with Angular 21, PrimeNG &amp; TailwindCSS</span>
+          <button
+            type="button"
+            (click)="scrollToTop()"
+            class="flex items-center gap-1.5 rounded-lg border border-[#16323a] bg-[#0a1c22] px-2.5 py-1 text-xs text-[#e7f2f3] transition-all hover:border-[#2dd4bf] hover:text-[#2dd4bf]"
+            aria-label="Back to top of page"
+          >
+            <span>Top</span>
+            <i class="pi pi-arrow-up text-[10px]" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

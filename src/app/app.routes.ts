@@ -28,6 +28,11 @@ export const routes: Routes = [
         title: 'Experience',
       },
       {
+        path: 'skills',
+        loadComponent: () => import('./Contacts/skills/skills').then((m) => m.Skills),
+        title: 'Skills',
+      },
+      {
         path: "projects",
         loadComponent: () => import('./Components/projects/projects').then((m) => m.Projects),
         title: 'Projects',

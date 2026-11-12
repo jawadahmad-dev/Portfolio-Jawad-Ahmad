@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -8,9 +8,8 @@ import { ContactModel, Web3FormsResponse } from '../../Core/Models/Contact';
 import { Shared } from '../../Core/Services/shared';
 import { Rest } from '../../Core/Services/rest';
 
-/** Web3Forms access keys are meant to be public. Restrict the key to your domain in the Web3Forms dashboard. */
+/** Web3Forms access keys are public keys. */
 const WEB3FORMS_ACCESS_KEY = '0bcb2d01-9d14-4e7c-a7b0-5f3f8b4a433f';
-
 const MESSAGE_MAX = 2000;
 
 @Component({
@@ -18,6 +17,7 @@ const MESSAGE_MAX = 2000;
   imports: [ReactiveFormsModule, ButtonModule, InputTextModule, TextareaModule],
   templateUrl: './contact.html',
   styleUrl: './contact.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Contact implements OnInit {
   contactForm!: FormGroup;
@@ -29,13 +29,14 @@ export class Contact implements OnInit {
   protected readonly sending = signal(false);
   protected readonly sent = signal(false);
   protected readonly about = signal<AboutModel | null>(null);
+  protected readonly copied = signal(false);
 
   ngOnInit(): void {
     this.initContactForm();
     this.loadAbout();
   }
 
-  private initContactForm() {
+  private initContactForm(): void {
     this.contactForm = this.fb.group({
       name: [
         '',
@@ -56,14 +57,13 @@ export class Contact implements OnInit {
     });
   }
 
-  /** Optional: shows your email and profile links next to the form. */
   private async loadAbout(): Promise<void> {
     try {
       const snapshot = await this.restService.getAbout();
       const value = snapshot.val() as Record<string, AboutModel> | null;
       this.about.set(Object.values(value ?? {})[0] ?? null);
     } catch (err) {
-      console.error(err); // not critical, the form still works
+      console.warn('Could not load contact profile info:', err);
     }
   }
 
@@ -76,11 +76,22 @@ export class Contact implements OnInit {
     return (this.contactForm.get('message')?.value ?? '').length;
   }
 
-  protected onSubmitContact() {
+  protected copyEmail(email: string): void {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(email).then(() => {
+        this.copied.set(true);
+        this.sharedService.toaster('success', 'Copied', 'Email address copied to clipboard!');
+        setTimeout(() => this.copied.set(false), 3000);
+      });
+    }
+  }
+
+  protected onSubmitContact(): void {
     if (this.sending()) return;
 
     if (this.contactForm.invalid) {
       this.contactForm.markAllAsTouched();
+      this.sharedService.toaster('warn', 'Required Fields', 'Please complete all required fields.');
       return;
     }
 
@@ -107,6 +118,7 @@ export class Contact implements OnInit {
             botcheck: false,
           });
           this.sent.set(true);
+          this.sharedService.toaster('success', 'Sent!', 'Thank you! Your message was delivered.');
           return;
         }
         this.sharedService.toaster(
@@ -121,7 +133,7 @@ export class Contact implements OnInit {
         this.sharedService.toaster(
           'error',
           'Error',
-          'Could not send your message. Please try again.',
+          'Could not send your message. Please try again later.',
         );
       },
     });

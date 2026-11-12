@@ -5,26 +5,10 @@ import { TagModule } from 'primeng/tag';
 import { Rest } from '../../Core/Services/rest';
 import { Shared } from '../../Core/Services/shared';
 import { HeroModel } from '../../Core/Models/Hero';
-import { downloadResume as saveResumeFile, isPdfDataUrl } from '../../Core/Services/Resume';
 import { AboutModel } from '../../Core/Models/About';
-
-interface Project {
-  name: string;
-  note: string;
-  tag: string;
-  icon: string;
-}
-
-interface Offer {
-  title: string;
-  text: string;
-  icon: string;
-}
-
-interface StackGroup {
-  label: string;
-  items: string[];
-}
+import { ProjectsModel } from '../../Core/Models/Projects';
+import { SkillsModel } from '../../Core/Models/Skills';
+import { downloadResume as saveResumeFile, isPdfDataUrl } from '../../Core/Services/Resume';
 
 @Component({
   selector: 'app-home',
@@ -39,22 +23,44 @@ export class Home implements OnInit {
 
   HeroData = signal<HeroModel | null>(null);
   AboutData = signal<AboutModel | null>(null);
+  FeaturedProjects = signal<ProjectsModel[]>([]);
+  FeaturedSkills = signal<SkillsModel[]>([]);
+  isLoading = signal(true);
 
   ngOnInit(): void {
-    this.GetHero();
-    this.GetAbout();
+    this.loadHomeData();
   }
 
-  async GetHero(): Promise<void> {
+  private async loadHomeData(): Promise<void> {
+    this.isLoading.set(true);
     try {
-      const snapshot = await this.restService.getHero();
-      const value = snapshot.val() as Record<string, HeroModel> | null;
-      const hero = Object.values(value ?? {})[0] ?? null;
+      const [heroSnap, aboutSnap, projSnap, skillsSnap] = await Promise.all([
+        this.restService.getHero(),
+        this.restService.getAbout(),
+        this.restService.getProjects(),
+        this.restService.getSkills(),
+      ]);
+
+      const heroVal = heroSnap.val() as Record<string, HeroModel> | null;
+      const hero = Object.values(heroVal ?? {})[0] ?? null;
       this.HeroData.set(hero);
-      console.log('Hero data loaded:', hero);
+
+      const aboutVal = aboutSnap.val() as Record<string, AboutModel> | null;
+      const about = Object.values(aboutVal ?? {})[0] ?? null;
+      this.AboutData.set(about);
+
+      const projVal = projSnap.val() as Record<string, ProjectsModel> | null;
+      const projects = Object.entries(projVal ?? {}).map(([id, p]) => ({ ...p, id }));
+      this.FeaturedProjects.set(projects.slice(0, 3));
+
+      const skillsVal = skillsSnap.val() as Record<string, SkillsModel> | null;
+      const skills = Object.entries(skillsVal ?? {}).map(([id, s]) => ({ ...s, id }));
+      this.FeaturedSkills.set(skills);
     } catch (err) {
-      console.error(err);
-      this.sharedService.toaster('error', 'Error', 'Could not load the hero section.');
+      console.error('Error loading home data:', err);
+      this.sharedService.toaster('error', 'Error', 'Could not load some homepage content.');
+    } finally {
+      this.isLoading.set(false);
     }
   }
 
@@ -65,16 +71,15 @@ export class Home implements OnInit {
     }
   }
 
-  private async GetAbout(): Promise<void> {
-    try {
-      const snapshot = await this.restService.getAbout();
-      const value = snapshot.val() as Record<string, AboutModel> | null;
-      const about = Object.values(value ?? {})[0] ?? null;
-      this.AboutData.set(about);
-      console.log('About data loaded:', about);
-    } catch (err) {
-      console.error(err);
-      this.sharedService.toaster('error', 'Error', 'Could not load the about section.');
+  protected getTechList(techString?: string): string[] {
+    if (!techString) return [];
+    return techString.split(',').map((t) => t.trim()).filter(Boolean);
+  }
+
+  protected getCoverImage(project: ProjectsModel): string | null {
+    if (project.images && project.images.length > 0) {
+      return project.images[0];
     }
+    return project.image ?? null;
   }
 }
