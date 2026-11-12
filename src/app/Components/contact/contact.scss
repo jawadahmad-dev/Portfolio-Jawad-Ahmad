@@ -1,0 +1,142 @@
+// Same teal palette as the home page and navbar
+:host {
+  --c-bg: #08161b;
+  --c-card: #0f242b;
+  --c-border: #16323a;
+  --c-text: #e7f2f3;
+  --c-text-2: #9bb4b9;
+  --c-primary: #2dd4bf;
+  --c-primary-soft: rgba(45, 212, 191, 0.12);
+  --c-ink: #04201c;
+  --c-red: #f87171;
+
+  display: block;
+  min-height: 100vh;
+  background: var(--c-bg);
+  color: var(--c-text);
+}
+
+.title {
+  max-width: 14ch;
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 46ch;
+  margin-top: 1rem;
+  color: var(--c-text-2);
+  font-size: 1.02rem;
+  line-height: 1.65;
+}
+
+.card {
+  border: 1px solid var(--c-border);
+  border-radius: 1rem;
+  background: var(--c-card);
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--c-text-2);
+}
+
+.field {
+  width: 100%;
+  background: transparent;
+  border-color: var(--c-border);
+  color: var(--c-text);
+
+  &::placeholder {
+    color: var(--c-text-2);
+  }
+
+  &:focus {
+    border-color: var(--c-primary);
+  }
+}
+
+textarea.field {
+  resize: vertical;
+}
+
+.btn-primary,
+.btn-ghost {
+  border-radius: 0.75rem;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background: var(--c-primary);
+  border: 1px solid var(--c-primary);
+  color: var(--c-ink);
+
+  &:hover {
+    background: var(--c-primary);
+    filter: brightness(1.08);
+  }
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--c-border);
+  color: var(--c-text);
+
+  &:hover {
+    background: var(--c-primary-soft);
+    border-color: var(--c-primary);
+    color: var(--c-primary);
+  }
+}
+
+.icon-tile {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  background: var(--c-primary-soft);
+  color: var(--c-primary);
+
+  &--lg {
+    width: 3.5rem;
+    height: 3.5rem;
+    font-size: 1.4rem;
+  }
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.9rem;
+  color: var(--c-text);
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+
+  &:hover {
+    border-color: var(--c-border);
+    background: var(--c-card);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--c-primary);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-link {
+    transition: none;
+  }
+}

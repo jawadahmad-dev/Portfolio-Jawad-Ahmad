@@ -6,12 +6,16 @@ import { ProjectsModel } from '../Models/Projects';
 import { SkillsModel } from '../Models/Skills';
 import { AboutModel } from '../Models/About';
 import { HeroModel } from '../Models/Hero';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { ContactModel, Web3FormsResponse } from '../Models/Contact';
 
 @Injectable({ providedIn: 'root' })
 export class Rest {
   private readonly db = inject(Database);
   private readonly injector = inject(Injector);
   private readonly sharedService = inject(Shared);
+  private readonly http = inject(HttpClient);
 
   //-------------Aut-----------
 
@@ -162,5 +166,10 @@ export class Rest {
     return runInInjectionContext(this.injector, () => remove(ref(this.db, `hero/${id}`))).finally(
       () => this.sharedService.hideLoading(),
     );
+  }
+
+  // ---- Contact Form Submission ----
+  sendContactForm(payload: ContactModel): Observable<Web3FormsResponse> {
+    return this.http.post<Web3FormsResponse>('https://api.web3forms.com/submit', payload);
   }
 }

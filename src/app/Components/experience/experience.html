@@ -1,1 +1,51 @@
-<p>experience works!</p>
+<section class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:py-24">
+    <h1 class="title">Experience</h1>
+    <p class="lead">Where I've worked and what I've built along the way.</p>
+
+    @if (loading()) {
+    <div class="mt-12 space-y-6" aria-hidden="true">
+        @for (n of [1, 2, 3]; track n) {
+        <div class="card h-36 animate-pulse"></div>
+        }
+    </div>
+    } @else if (experiences().length) {
+    <ol class="timeline mt-12">
+        @for (e of experiences(); track e.id) {
+        <li class="timeline__item">
+            <span class="timeline__dot" [class.timeline__dot--current]="isCurrent(e)" aria-hidden="true"></span>
+
+            <article class="card p-5 sm:p-6">
+                <div class="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+                    <div class="min-w-0">
+                        <h2 class="role">{{ e.jobTitle }}</h2>
+                        <p class="company">{{ e.company }}</p>
+                    </div>
+                    @if (isCurrent(e)) {
+                    <p-tag value="Current"
+                        styleClass="!rounded-full !px-3 !py-1 !text-xs !font-medium !bg-[var(--e-primary-soft)] !text-[var(--e-primary)]" />
+                    }
+                </div>
+
+                <p class="period">
+                    <i class="pi pi-calendar" aria-hidden="true"></i>
+                    <span>{{ period(e) }}</span>
+                    @if (duration(e); as length) {
+                    <span class="period__length">{{ length }}</span>
+                    }
+                </p>
+
+                @if (e.description) {
+                <p class="description">{{ e.description }}</p>
+                }
+            </article>
+        </li>
+        }
+    </ol>
+    } @else {
+    <div class="card mt-12 p-10 text-center text-[var(--e-text-2)]">
+        <i class="pi pi-briefcase mb-3 text-3xl opacity-50" aria-hidden="true"></i>
+        <p class="font-medium text-[var(--e-text)]">No experience added yet</p>
+        <p class="text-sm">Check back soon.</p>
+    </div>
+    }
+</section>
