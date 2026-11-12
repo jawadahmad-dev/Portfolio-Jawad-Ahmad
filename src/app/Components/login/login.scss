@@ -1,4 +1,4 @@
-scss :host {
+:host {
   display: block;
   min-height: 100vh;
 }
@@ -8,12 +8,20 @@ scss :host {
   width: 100%;
 }
 
-/* PrimeNG input inside password */
 :host ::ng-deep .p-password-input {
   width: 100%;
+  background: rgba(11, 27, 32, 0.8);
+  border: 1px solid rgba(22, 50, 58, 1);
+  color: #e7f2f3;
+  border-radius: 0.75rem;
 }
 
-/* Make PrimeNG button consistently full width */
+:host ::ng-deep .p-password-input:focus,
+:host ::ng-deep .p-password-input:hover {
+  border-color: rgba(45, 212, 191, 0.9);
+  box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.2);
+}
+
 :host ::ng-deep .p-button {
   justify-content: center;
 }
