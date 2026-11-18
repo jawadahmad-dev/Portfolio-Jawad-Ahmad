@@ -9,84 +9,89 @@
   </div>
 
   @if (loading()) {
-    <div class="space-y-6" aria-hidden="true">
-      @for (n of [1, 2, 3]; track n) {
-        <div class="h-36 animate-pulse rounded-2xl border border-[#16323a] bg-[#0a1c22]"></div>
-      }
-    </div>
+  <div class="space-y-6" aria-hidden="true">
+    @for (n of [1, 2, 3]; track n) {
+    <div class="h-36 animate-pulse rounded-2xl border border-[#16323a] bg-[#0a1c22]"></div>
+    }
+  </div>
   } @else if (experiences().length > 0) {
-    <!-- Timeline Stream -->
-    <div class="relative space-y-8 before:absolute before:inset-0 before:left-4 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-[#2dd4bf] before:via-[#16323a] before:to-transparent sm:before:left-8">
-      @for (e of experiences(); track e.id) {
-        <div class="relative flex items-start gap-6 sm:gap-10">
-          <!-- Timeline Node Point -->
-          <div class="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-[#2dd4bf] bg-[#061319] shadow-lg shadow-[#2dd4bf]/20 sm:h-10 sm:w-10">
-            <span class="h-2.5 w-2.5 rounded-full bg-[#2dd4bf]" [class.animate-ping]="isCurrent(e)"></span>
-          </div>
+  <!-- Timeline Stream -->
+  <div
+    class="relative space-y-8 before:absolute before:inset-0 before:left-4 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-[#2dd4bf] before:via-[#16323a] before:to-transparent sm:before:left-8">
+    @for (e of experiences(); track e.id) {
+    <div class="relative flex items-start gap-6 sm:gap-10">
+      <!-- Timeline Node Point -->
+      <div
+        class="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-[#2dd4bf] bg-[#061319] shadow-lg shadow-[#2dd4bf]/20 sm:h-10 sm:w-10">
+        <span class="h-2.5 w-2.5 rounded-full bg-[#2dd4bf]" [class.animate-ping]="isCurrent(e)"></span>
+      </div>
 
-          <!-- Timeline Card -->
-          <article class="flex-1 rounded-3xl border border-[#16323a] bg-[#0a1c22] p-6 shadow-xl transition-all duration-300 hover:border-[#2dd4bf]/40 hover:shadow-2xl sm:p-8">
-            <!-- Header Row -->
-            <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
-              <div>
-                <div class="flex flex-wrap items-center gap-2.5">
-                  <h2 class="text-xl font-bold text-white sm:text-2xl">{{ e.jobTitle }}</h2>
-                  @if (isCurrent(e)) {
-                    <span class="rounded-full border border-[#2dd4bf]/30 bg-[#2dd4bf]/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#2dd4bf]">
-                      Current Role
-                    </span>
-                  }
-                </div>
-
-                <div class="mt-1 flex items-center gap-2 text-sm font-semibold text-[#2dd4bf]">
-                  <i class="pi pi-building text-xs" aria-hidden="true"></i>
-                  <span>{{ e.company }}</span>
-                </div>
-              </div>
-
-              <!-- Period Pill -->
-              <div class="flex flex-col items-start sm:items-end">
-                <span class="inline-flex items-center gap-1.5 rounded-xl border border-[#16323a] bg-[#061319] px-3 py-1 text-xs font-bold text-white">
-                  <i class="pi pi-calendar text-[10px] text-[#2dd4bf]" aria-hidden="true"></i>
-                  <span>{{ period(e) }}</span>
-                </span>
-                @if (duration(e); as len) {
-                  <span class="mt-1 text-[11px] font-medium text-[#9bb4b9]">{{ len }}</span>
-                }
-              </div>
+      <!-- Timeline Card -->
+      <article
+        class="flex-1 rounded-3xl border border-[#16323a] bg-[#0a1c22] p-6 shadow-xl transition-all duration-300 hover:border-[#2dd4bf]/40 hover:shadow-2xl sm:p-8">
+        <!-- Header Row -->
+        <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+          <div>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <h2 class="text-xl font-bold text-white sm:text-2xl">{{ e.jobTitle }}</h2>
+              @if (isCurrent(e)) {
+              <span
+                class="rounded-full border border-[#2dd4bf]/30 bg-[#2dd4bf]/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#2dd4bf]">
+                Current Role
+              </span>
+              }
             </div>
 
-            <!-- Description -->
-            @if (e.description) {
-              <div class="mt-4 border-t border-[#16323a]/60 pt-4">
-                <p class="whitespace-pre-line text-sm leading-relaxed text-[#9bb4b9]">{{ e.description }}</p>
-              </div>
-            }
-          </article>
-        </div>
-      }
-    </div>
+            <div class="mt-1 flex items-center gap-2 text-sm font-semibold text-[#2dd4bf]">
+              <i class="pi pi-building text-xs" aria-hidden="true"></i>
+              <span>{{ e.company }}</span>
+            </div>
+          </div>
 
-    <!-- Resume Call to Action -->
-    @if (hero()?.resume) {
-      <div class="mt-16 rounded-3xl border border-[#16323a] bg-gradient-to-r from-[#0a1c22] to-[#0d2a33] p-8 sm:p-10 text-center sm:text-left flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 shadow-xl">
-        <div>
-          <h2 class="text-xl font-bold text-white sm:text-2xl">Looking for a complete resume?</h2>
-          <p class="mt-1 text-sm text-[#9bb4b9]">Download my full curriculum vitae in PDF format.</p>
+          <!-- Period Pill -->
+          <div class="flex flex-col items-start sm:items-end">
+            <span
+              class="inline-flex items-center gap-1.5 rounded-xl border border-[#16323a] bg-[#061319] px-3 py-1 text-xs font-bold text-white">
+              <i class="pi pi-calendar text-[10px] text-[#2dd4bf]" aria-hidden="true"></i>
+              <span>{{ period(e) }}</span>
+            </span>
+            @if (duration(e); as len) {
+            <span class="mt-1 text-[11px] font-medium text-[#9bb4b9]">{{ len }}</span>
+            }
+          </div>
         </div>
-        <button type="button"
-                (click)="downloadResume()"
-                class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#2dd4bf] to-[#14b8a6] px-6 py-3 text-sm font-bold text-[#04201c] transition-all hover:scale-105 hover:brightness-110">
-          <i class="pi pi-download text-xs" aria-hidden="true"></i>
-          <span>Download Resume (PDF)</span>
-        </button>
-      </div>
-    }
-  } @else {
-    <div class="rounded-3xl border border-[#16323a] bg-[#0a1c22] p-16 text-center text-[#9bb4b9]">
-      <i class="pi pi-briefcase mb-4 text-4xl text-[#2dd4bf]/40" aria-hidden="true"></i>
-      <h2 class="text-xl font-bold text-white">No experience added yet</h2>
-      <p class="mt-2 text-sm">Experience milestones will appear here once saved in the admin panel.</p>
+
+        <!-- Description -->
+        @if (e.description) {
+        <div class="mt-4 border-t border-[#16323a]/60 pt-4">
+          <p class="whitespace-pre-line text-sm leading-relaxed text-[#9bb4b9]">{{ e.description }}</p>
+        </div>
+        }
+      </article>
     </div>
+    }
+  </div>
+
+  <!-- Resume Call to Action -->
+  @if (hero()?.resume) {
+  <div
+    class="mt-16 rounded-3xl border border-[#16323a] bg-gradient-to-r from-[#0a1c22] to-[#0d2a33] p-8 sm:p-10 text-center sm:text-left flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 shadow-xl">
+    <div>
+      <h2 class="text-xl font-bold text-white sm:text-2xl">Looking for a complete resume?</h2>
+      <p class="mt-1 text-sm text-[#9bb4b9]">Download my full curriculum vitae in PDF format.</p>
+    </div>
+    <button type="button" (click)="downloadResume()"
+      class="btn-primary cursor-pointer inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#2dd4bf] to-[#14b8a6] px-6 py-3.5 text-sm font-semibold text-[#04201c] shadow-lg shadow-[#2dd4bf]/20 transition-all hover:scale-[1.02] hover:brightness-110 hover:shadow-xl hover:shadow-[#2dd4bf]/30">
+      <i class="pi pi-download text-xs" aria-hidden="true"></i>
+      <span>Download Resume (PDF)</span>
+    </button>
+  </div>
+  }
+  } @else {
+  <div class="rounded-3xl border border-[#16323a] bg-[#0a1c22] p-16 text-center text-[#9bb4b9]">
+    <i class="pi pi-briefcase mb-4 text-4xl text-[#2dd4bf]/40" aria-hidden="true"></i>
+    <h2 class="text-xl font-bold text-white">No experience added yet</h2>
+    <p class="mt-2 text-sm">Experience milestones will appear here once saved in the admin panel.</p>
+  </div>
   }
 </section>

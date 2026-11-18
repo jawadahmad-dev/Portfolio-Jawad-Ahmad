@@ -1,17 +1,43 @@
 <p-toast></p-toast>
 <p-confirmdialog></p-confirmdialog>
 
+
 @if (isLoading$ | async) {
-<div class="fixed inset-0 z-[9999] flex items-center justify-center bg-[#041216]/65 backdrop-blur-sm">
-    <div
-        class="relative flex h-20 w-20 items-center justify-center rounded-full border border-[#2dd4bf]/30 bg-[#0a1c22]/80 shadow-2xl shadow-[#2dd4bf]/10">
-        <span class="absolute h-16 w-16 rounded-full border border-[#2dd4bf]/20"></span>
-        <span
-            class="absolute h-16 w-16 animate-spin rounded-full border-2 border-transparent border-t-[#2dd4bf] border-r-[#38bdf8]"></span>
-        <span class="text-lg font-black tracking-tight text-[#2dd4bf]">JW</span>
+<div class="fixed inset-0 z-[9999] flex items-center justify-center
+              bg-[#041216]/80 backdrop-blur-[3px]">
+
+    <div class="flex flex-col items-center gap-5">
+
+        <!-- Minimal Spinner -->
+        <div class="relative h-12 w-12">
+            <span class="absolute inset-0 rounded-full border-2
+                     border-[#2dd4bf]/15"></span>
+
+            <span class="absolute inset-0 animate-spin rounded-full
+                     border-2 border-transparent border-t-[#2dd4bf]">
+            </span>
+        </div>
+
+        <!-- Loading Label -->
+        <div class="flex flex-col items-center gap-3">
+            <span class="text-[11px] font-medium tracking-[0.25em]
+                     text-slate-300">
+                PLEASE WAIT
+            </span>
+
+            <div class="flex gap-1.5">
+                <span class="h-1 w-1 animate-pulse rounded-full bg-[#2dd4bf]"></span>
+                <span class="h-1 w-1 animate-pulse rounded-full bg-[#2dd4bf]/70
+                       [animation-delay:150ms]"></span>
+                <span class="h-1 w-1 animate-pulse rounded-full bg-[#2dd4bf]/40
+                       [animation-delay:300ms]"></span>
+            </div>
+        </div>
+
     </div>
 </div>
 }
+
 
 <snow-effect flakes="150" speed="0.5" color="white" wind="1" opacity="0.3">
 </snow-effect>
