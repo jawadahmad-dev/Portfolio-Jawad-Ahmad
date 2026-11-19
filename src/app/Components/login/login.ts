@@ -61,6 +61,7 @@ export class Login {
 
   ngOnInit(): void {
     this.formInit();
+    console.log('pass Hash:', this.sharedService.EnCrypt('Nordic@321'));
   }
 
   formInit() {
@@ -70,40 +71,38 @@ export class Login {
     });
   }
 
+  onSubmit() {
+    this.signInForm.markAllAsTouched();
+    if (this.signInForm.invalid) {
+      this.sharedService.toaster('error', 'Error', 'Please enter both your email and password.');
+      return;
+    }
 
-onSubmit() {
-  this.signInForm.markAllAsTouched();
-  if (this.signInForm.invalid) {
-    this.sharedService.toaster('error', 'Error', 'Please enter both your email and password.');
-    return;
+    this.isSubmitting.set(true);
+    const { email, password } = this.signInForm.value;
+
+    this.restService
+      .getUsers()
+      .then(async (snapshot) => {
+        console.log('users:', snapshot.val());
+        const usersObj = snapshot.val() as Record<string, User> | null;
+        const match = Object.values(usersObj ?? {}).find(
+          (u) => u.email === email && this.sharedService.DeCrypt(u.password) === password,
+        );
+
+        if (!match) {
+          this.sharedService.toaster('error', 'Auth Error', 'Invalid Credentials');
+          return;
+        }
+
+        await this.restService.Login({ email: match.email, loggedIn: true });
+        localStorage.setItem('isLoggedIn', 'true');
+        this.router.navigate(['/admin']);
+      })
+      .catch((err) => {
+        console.error(err);
+        this.sharedService.toaster('error', 'Error', 'Something went wrong. Please try again.');
+      })
+      .finally(() => this.isSubmitting.set(false));
   }
-
-  this.isSubmitting.set(true);
-  const { email, password } = this.signInForm.value;
-
-  this.restService
-    .getUsers()
-    .then(async (snapshot) => {
-         console.log('users:', snapshot.val());
-      const usersObj = snapshot.val() as Record<string, User> | null;
-      const match = Object.values(usersObj ?? {}).find(
-        (u) => u.email === email && this.sharedService.DeCrypt(u.password) === password,
-      );
-
-      if (!match) {
-        this.sharedService.toaster('error', 'Auth Error', 'Invalid Credentials');
-        return;
-      }
-
-      await this.restService.Login({ email: match.email, loggedIn: true });
-      localStorage.setItem('isLoggedIn', 'true');
-      this.router.navigate(['/admin']);
-    })
-    .catch((err) => {
-      console.error(err);
-      this.sharedService.toaster('error', 'Error', 'Something went wrong. Please try again.');
-    })
-    .finally(() => this.isSubmitting.set(false));
 }
-  }
-
