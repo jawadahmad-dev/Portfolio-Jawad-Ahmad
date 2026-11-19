@@ -97,6 +97,7 @@ export class Login {
 
         await this.restService.Login({ email: match.email, loggedIn: true });
         localStorage.setItem('isLoggedIn', 'true');
+        this.sharedService.toaster('success', 'Success', 'Login successful');
         this.router.navigate(['/admin']);
       })
       .catch((err) => {
