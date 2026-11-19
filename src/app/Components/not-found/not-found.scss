@@ -1,0 +1,173 @@
+:host {
+  --nf-bg: #061a1f;
+  --nf-card: rgba(11, 31, 38, 0.85);
+  --nf-border: rgba(45, 212, 191, 0.15);
+  --nf-accent: #2dd4bf;
+  --nf-accent-2: #14b8a6;
+  --nf-text: #9db4b8;
+
+  display: block;
+}
+
+.nf {
+  background: radial-gradient(ellipse at top, #0a2a30 0%, transparent 60%), var(--nf-bg);
+
+  &__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(45, 212, 191, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(45, 212, 191, 0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(circle at center, #000 30%, transparent 75%);
+  }
+
+  &__glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.25;
+    animation: float 9s ease-in-out infinite;
+
+    &--one {
+      width: 320px;
+      height: 320px;
+      background: var(--nf-accent);
+      top: -80px;
+      left: -60px;
+    }
+
+    &--two {
+      width: 260px;
+      height: 260px;
+      background: #6366f1;
+      bottom: -60px;
+      right: -40px;
+      animation-delay: -4s;
+    }
+  }
+
+  &__card {
+    background: var(--nf-card);
+    border: 1px solid var(--nf-border);
+    border-radius: 1.5rem;
+    backdrop-filter: blur(14px);
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    animation: rise 0.6s ease-out both;
+  }
+
+  &__badge {
+    color: var(--nf-accent);
+    background: rgba(45, 212, 191, 0.08);
+    border: 1px solid var(--nf-border);
+    letter-spacing: 0.12em;
+  }
+
+  &__code {
+    font-size: clamp(5rem, 18vw, 8.5rem);
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg, #ffffff 0%, var(--nf-accent) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 30px rgba(45, 212, 191, 0.25));
+  }
+
+  &__text {
+    color: var(--nf-text);
+  }
+
+  &__links {
+    border-top: 1px solid var(--nf-border);
+  }
+
+  &__label {
+    color: var(--nf-text);
+    font-size: 0.8rem;
+  }
+
+  &__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #e6f4f1;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--nf-border);
+    border-radius: 999px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+
+    i {
+      font-size: 0.75rem;
+      color: var(--nf-accent);
+    }
+
+    &:hover {
+      border-color: var(--nf-accent);
+      background: rgba(45, 212, 191, 0.1);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+// PrimeNG buttons render outside the component's view encapsulation
+:host ::ng-deep {
+  .nf__btn-primary.p-button {
+    background: linear-gradient(135deg, var(--nf-accent), var(--nf-accent-2));
+    border: none;
+    color: #04211f;
+    font-weight: 600;
+    padding: 0.7rem 1.4rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 24px rgba(45, 212, 191, 0.3);
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(45, 212, 191, 0.45);
+      background: linear-gradient(135deg, #5eead4, var(--nf-accent));
+    }
+  }
+
+  .nf__btn-secondary.p-button {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--nf-border);
+    color: #e6f4f1;
+    font-weight: 600;
+    padding: 0.7rem 1.4rem;
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: var(--nf-accent);
+      background: rgba(45, 212, 191, 0.08);
+      color: #fff;
+    }
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(24px);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

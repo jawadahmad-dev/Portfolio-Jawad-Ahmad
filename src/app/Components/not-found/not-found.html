@@ -1,1 +1,43 @@
-<p>not-found works!</p>
+<section class="nf relative min-h-screen flex items-center justify-center overflow-hidden px-4">
+    <!-- background decoration -->
+    <div class="nf__grid"></div>
+    <div class="nf__glow nf__glow--one"></div>
+    <div class="nf__glow nf__glow--two"></div>
+
+    <div class="nf__card relative z-10 w-full max-w-xl text-center p-8 sm:p-12">
+        <span class="nf__badge inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full">
+            <i class="pi pi-compass"></i>
+            PAGE NOT FOUND
+        </span>
+
+        <h1 class="nf__code mt-6 font-extrabold leading-none">404</h1>
+
+        <h2 class="mt-4 text-2xl sm:text-3xl font-bold text-white">
+            Looks like you're lost
+        </h2>
+
+        <p class="nf__text mt-3 text-sm sm:text-base leading-relaxed">
+            The page you're looking for doesn't exist, was moved, or the link is
+            broken. Let's get you back to something useful.
+        </p>
+
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <p-button label="Back to Home" icon="pi pi-home" routerLink="/" styleClass="nf__btn-primary" />
+            <p-button label="Go Back" icon="pi pi-arrow-left" [outlined]="true" (onClick)="goBack()"
+                styleClass="nf__btn-secondary" />
+        </div>
+
+        <div class="nf__links mt-8 pt-6 flex flex-wrap items-center justify-center gap-2">
+            <span class="nf__label">Or visit</span>
+            <a routerLink="/projects" class="nf__chip">
+                <i class="pi pi-th-large"></i> Projects
+            </a>
+            <a routerLink="/experience" class="nf__chip">
+                <i class="pi pi-briefcase"></i> Experience
+            </a>
+            <a routerLink="/contact" class="nf__chip">
+                <i class="pi pi-send"></i> Contact
+            </a>
+        </div>
+    </div>
+</section>
