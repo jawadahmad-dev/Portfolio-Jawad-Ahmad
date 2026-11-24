@@ -1,19 +1,19 @@
-// Same teal palette as the home page and navbar
+// Palette aliases point at the global theme tokens so both themes stay consistent.
 :host {
-  --c-bg: #08161b;
-  --c-card: #0f242b;
-  --c-border: #16323a;
-  --c-text: #e7f2f3;
-  --c-text-2: #9bb4b9;
-  --c-primary: #2dd4bf;
-  --c-primary-soft: rgba(45, 212, 191, 0.12);
-  --c-ink: #04201c;
-  --c-red: #f87171;
+  --c-bg: var(--bg);
+  --c-card: var(--bg-elevated);
+  --c-border: var(--border);
+  --c-text: var(--text);
+  --c-text-2: var(--text-muted);
+  --c-primary: var(--primary);
+  --c-primary-soft: var(--primary-soft);
+  --c-ink: var(--primary-contrast);
+  --c-red: #dc2626;
 
   display: block;
   min-height: 100vh;
-  background: var(--c-bg);
-  color: var(--c-text);
+  background: transparent;
+  color: var(--text);
 }
 
 .title {

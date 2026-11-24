@@ -5,32 +5,32 @@
 
 @if (isLoading$ | async) {
 <div class="fixed inset-0 z-[9999] flex items-center justify-center
-              bg-[#041216]/80 backdrop-blur-[3px]">
+              bg-[var(--bg)]/85 backdrop-blur-[3px]">
 
     <div class="flex flex-col items-center gap-5">
 
         <!-- Minimal Spinner -->
         <div class="relative h-12 w-12">
             <span class="absolute inset-0 rounded-full border-2
-                     border-[#2dd4bf]/15"></span>
+                     border-primary/15"></span>
 
             <span class="absolute inset-0 animate-spin rounded-full
-                     border-2 border-transparent border-t-[#2dd4bf]">
+                     border-2 border-transparent border-t-primary">
             </span>
         </div>
 
         <!-- Loading Label -->
         <div class="flex flex-col items-center gap-3">
             <span class="text-[11px] font-medium tracking-[0.25em]
-                     text-slate-300">
+                     text-muted">
                 PLEASE WAIT
             </span>
 
             <div class="flex gap-1.5">
-                <span class="h-1 w-1 animate-pulse rounded-full bg-[#2dd4bf]"></span>
-                <span class="h-1 w-1 animate-pulse rounded-full bg-[#2dd4bf]/70
+                <span class="h-1 w-1 animate-pulse rounded-full bg-primary"></span>
+                <span class="h-1 w-1 animate-pulse rounded-full bg-primary/70
                        [animation-delay:150ms]"></span>
-                <span class="h-1 w-1 animate-pulse rounded-full bg-[#2dd4bf]/40
+                <span class="h-1 w-1 animate-pulse rounded-full bg-primary/40
                        [animation-delay:300ms]"></span>
             </div>
         </div>
@@ -45,7 +45,7 @@
 
 @if (showBackToTop()) {
 <button type="button" (click)="scrollToTop()" aria-label="Back to top"
-    class="fixed bottom-5 right-5 z-[80] flex h-12 w-12 items-center justify-center rounded-full border border-[var(--color-primary)]/40 bg-[var(--color-bg-elevated)] text-[var(--color-primary)] shadow-[var(--shadow-glow)] backdrop-blur-md">
+    class="fixed bottom-5 right-5 z-[80] flex h-12 w-12 items-center justify-center rounded-full border border-primary/40 bg-bg-elevated text-primary shadow-[var(--glow)] backdrop-blur-md">
     <i class="pi pi-arrow-up" aria-hidden="true"></i>
 </button>
 }

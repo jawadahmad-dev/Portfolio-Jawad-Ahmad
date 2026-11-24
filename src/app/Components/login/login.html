@@ -1,14 +1,9 @@
-<div class="relative w-screen h-screen flex items-center justify-center bg-[#050e13] overflow-hidden">
+<div class="relative w-screen h-screen flex items-center justify-center bg-bg overflow-hidden">
   <!-- Background Effects -->
   <div class="absolute inset-0 pointer-events-none overflow-hidden">
-    <div>
+    <div class="absolute -top-40 -left-40 w-[32rem] h-[32rem] bg-primary/15 rounded-full blur-3xl animate-pulse">
     </div>
-    <div class="absolute -top-40 -left-40 w-[32rem] h-[32rem] bg-[#2dd4bf]/15 rounded-full blur-3xl animate-pulse">
-    </div>
-    <div class="absolute -bottom-40 -right-40 w-[32rem] h-[32rem] bg-[#0ea5e9]/15 rounded-full blur-3xl animate-pulse">
-    </div>
-    <div
-      class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.05%22%20fill-rule%3D%22evenodd%22%3E%3Cpath%20d%3D%22M0%2040L40%200H20L0%2020M40%2040V20L20%2040%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-30">
+    <div class="absolute -bottom-40 -right-40 w-[32rem] h-[32rem] bg-accent/15 rounded-full blur-3xl animate-pulse">
     </div>
   </div>
 
@@ -16,41 +11,41 @@
   <div class="relative w-full max-w-md sm:max-w-lg px-4 z-10">
     <!-- Glassmorphism Card -->
     <div
-      class="rounded-3xl bg-[#0a1c22]/75 backdrop-blur-2xl border border-[#16323a] p-8 sm:p-10 shadow-[0_25px_60px_rgba(0,0,0,0.45)]">
+      class="rounded-3xl bg-bg-elevated/85 backdrop-blur-2xl border border-border p-8 sm:p-10 shadow-[var(--shadow-lg)]">
       <!-- Header -->
       <div class="flex flex-col items-center mb-8">
-        <h2 class="text-3xl font-bold text-[#f1f7f8] tracking-tight">Welcome back</h2>
-        <p class="text-[#9bb4b9] text-sm mt-2">Sign in to continue to your account</p>
+        <h2 class="text-3xl font-bold text-text tracking-tight">Welcome back</h2>
+        <p class="text-muted text-sm mt-2">Sign in to continue to your account</p>
       </div>
 
       <form [formGroup]="signInForm" (ngSubmit)="onSubmit()" class="space-y-5 auth-form">
         <!-- Email -->
         <div class="flex flex-col gap-1.5">
-          <label for="email" class="text-xs font-semibold text-[#9bb4b9] tracking-wide uppercase">Email address</label>
+          <label for="email" class="text-xs font-semibold text-muted tracking-wide uppercase">Email address</label>
           <p-iconfield class="w-full">
-            <p-inputicon class="pi pi-envelope !text-[#2dd4bf]" />
+            <p-inputicon class="pi pi-envelope !text-primary" />
             <input pInputText id="email" type="email" formControlName="email" placeholder="john@example.com"
-              class="w-full !bg-[#0b1b20]/80 !border-[#16323a] !text-[#e7f2f3] placeholder:!text-[#6f8792] rounded-xl focus:!border-[#2dd4bf] focus:!ring-2 focus:!ring-[#2dd4bf]/30 transition-all duration-200" />
+              class="w-full !bg-bg/80 !border-border !text-text placeholder:!text-subtle rounded-xl focus:!border-primary focus:!ring-2 focus:!ring-primary/30 transition-all duration-200" />
           </p-iconfield>
         </div>
 
         <!-- Password -->
         <div class="flex flex-col gap-1.5">
           <div class="flex items-center justify-between">
-            <label for="password" class="text-xs font-semibold text-[#9bb4b9] tracking-wide uppercase">Password</label>
+            <label for="password" class="text-xs font-semibold text-muted tracking-wide uppercase">Password</label>
           </div>
           <p-iconfield class="w-full">
-            <p-inputicon class="pi pi-lock !text-[#2dd4bf]" />
+            <p-inputicon class="pi pi-lock !text-primary" />
             <p-password formControlName="password" inputId="password" placeholder="Enter your password"
               [toggleMask]="true" [feedback]="false" styleClass="w-full"
-              inputStyleClass="w-full !bg-[#0b1b20]/80 !border-[#16323a] !text-[#e7f2f3] placeholder:!text-[#6f8792] rounded-xl
-                               focus:!border-[#2dd4bf] focus:!ring-2 focus:!ring-[#2dd4bf]/30 transition-all duration-200" />
+              inputStyleClass="w-full !bg-bg/80 !border-border !text-text placeholder:!text-subtle rounded-xl
+                               focus:!border-primary focus:!ring-2 focus:!ring-primary/30 transition-all duration-200" />
           </p-iconfield>
         </div>
 
         <!-- Submit Button -->
         <button type="submit"
-          class="w-full cursor-pointer py-3 px-5 mt-2 bg-green-300/10 text-white hover:from-[#5eead4] hover:to-[#38bdf8] disabled:from-[#2dd4bf]/50 disabled:to-[#0ea5e9]/50 disabled:cursor-not-allowed text-[#031417] font-semibold rounded-xl shadow-lg shadow-[#2dd4bf]/25 border border-transparent hover:border-[#5eead4]/50 transition-all duration-200 hover:-translate-y-0.5 flex items-center justify-center gap-2">
+          class="w-full cursor-pointer py-3 px-5 mt-2 bg-primary text-primary-contrast hover:bg-primary-hover disabled:bg-primary/50 disabled:cursor-not-allowed font-semibold rounded-xl shadow-lg shadow-primary/25 border border-transparent transition-all duration-200 hover:-translate-y-0.5 flex items-center justify-center gap-2">
           <span>Sign in</span>
           <i class="pi pi-arrow-right text-sm"></i>
         </button>

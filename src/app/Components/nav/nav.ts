@@ -6,6 +6,7 @@ import { Shared } from '../../Core/Services/shared';
 import { AboutModel } from '../../Core/Models/About';
 import { HeroModel } from '../../Core/Models/Hero';
 import { downloadResume as saveResumeFile, isPdfDataUrl } from '../../Core/Services/Resume';
+import { ThemeToggle } from '../../Core/theme-toggle';
 
 interface NavLink {
   label: string;
@@ -16,7 +17,7 @@ interface NavLink {
 
 @Component({
   selector: 'app-nav',
-  imports: [RouterLink, RouterLinkActive, ButtonModule, RouterOutlet],
+  imports: [RouterLink, RouterLinkActive, ButtonModule, RouterOutlet, ThemeToggle],
   templateUrl: './nav.html',
   styleUrl: './nav.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

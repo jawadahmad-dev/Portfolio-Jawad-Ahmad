@@ -1,11 +1,24 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
+  <script>
+    try {
+      var preference = localStorage.getItem('theme-preference') || 'system';
+      var resolved = preference === 'system'
+        ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : preference;
+      document.documentElement.classList.toggle('dark', resolved === 'dark');
+      document.documentElement.style.colorScheme = resolved;
+      var themeMeta = document.querySelector('meta[name="theme-color"]');
+      if (themeMeta) themeMeta.setAttribute('content', resolved === 'dark' ? '#061319' : '#eff7f6');
+    } catch (_) { }
+  </script>
   <title>Jawad Ahmad | Full-Stack Developer</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
   <meta name="description"
     content="Portfolio of Jawad Ahmad - Full-Stack Developer crafting high-performance web applications with Angular, ASP.NET Core, and modern cloud technologies.">
   <meta name="theme-color" content="#061319">
@@ -14,7 +27,7 @@
   </script>
 </head>
 
-<body class="bg-[#061319] text-[#e7f2f3] selection:bg-[#2dd4bf]/20 selection:text-[#2dd4bf] antialiased">
+<body class="bg-bg text-text selection:bg-primary-soft selection:text-primary antialiased">
   <app-root></app-root>
 </body>
 

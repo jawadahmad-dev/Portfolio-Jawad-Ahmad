@@ -5,17 +5,16 @@
 
 .filter-btn {
   &--active {
-    background-color: #2dd4bf !important;
-    border-color: #2dd4bf !important;
-    color: #04201c !important;
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: var(--primary-contrast) !important;
     font-weight: 700;
   }
 }
 
 .thumb-btn {
   &--active {
-    border-color: #2dd4bf !important;
-    box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.5);
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 50%, transparent);
   }
 }
-

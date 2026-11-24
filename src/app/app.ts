@@ -11,6 +11,7 @@ import {
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Shared } from './Core/Services/shared';
+import { ThemeService } from './Core/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -26,15 +27,11 @@ export class App implements OnInit {
   protected readonly showBackToTop = signal(false);
   private readonly router = inject(Router);
   private readonly sharedService = inject(Shared);
+  private readonly themeService = inject(ThemeService);
   protected readonly isLoading$ = this.sharedService.$obsloading;
 
   ngOnInit(): void {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('portfolio-theme');
-      document.documentElement.dataset['theme'] = saved ?? 'dark';
-      document.documentElement.classList.toggle('dark', (saved ?? 'dark') === 'dark');
-      this.onScroll();
-    }
+    this.onScroll();
 
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {

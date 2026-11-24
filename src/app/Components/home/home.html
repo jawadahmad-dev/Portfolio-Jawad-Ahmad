@@ -3,10 +3,10 @@
   <section class="relative mx-auto max-w-7xl px-4 pt-12 pb-20 sm:px-6 sm:pt-16 sm:pb-28 lg:px-8">
     <!-- Ambient Background Glows -->
     <div
-      class="pointer-events-none absolute -top-24 left-1/2 -z-10 h-96 w-96 -translate-x-1/2 rounded-full bg-[#2dd4bf]/10 blur-[120px]"
+      class="pointer-events-none absolute -top-24 left-1/2 -z-10 h-96 w-96 -translate-x-1/2 rounded-full bg-primary/10 blur-[120px]"
       aria-hidden="true"></div>
     <div
-      class="pointer-events-none absolute top-1/3 -right-24 -z-10 h-80 w-80 rounded-full bg-[#0ea5e9]/10 blur-[100px]"
+      class="pointer-events-none absolute top-1/3 -right-24 -z-10 h-80 w-80 rounded-full bg-accent/10 blur-[100px]"
       aria-hidden="true"></div>
 
     <div class="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
@@ -14,18 +14,18 @@
       <div class="flex flex-col items-start">
 
         <!-- Headline -->
-        <h1 class="hero-title text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+        <h1 class="hero-title text-4xl font-extrabold tracking-tight text-text sm:text-5xl lg:text-6xl">
           @if (HeroData()?.title; as title) {
           {{ title }}
           } @else {
           Building Next-Gen <span
-            class="bg-gradient-to-r from-[#2dd4bf] via-[#38bdf8] to-[#2dd4bf] bg-clip-text text-transparent">Digital
+            class="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">Digital
             Experiences</span>
           }
         </h1>
 
         <!-- Subtitle & Description -->
-        <p class="hero-lead mt-6 text-lg leading-relaxed text-[#9bb4b9] sm:text-xl">
+        <p class="hero-lead mt-6 text-lg leading-relaxed text-muted sm:text-xl">
           @if (HeroData()?.description; as desc) {
           {{ desc }}
           } @else {
@@ -39,14 +39,14 @@
         <!-- CTA Buttons -->
         <div class="mt-8 flex flex-wrap items-center gap-3.5">
           <a routerLink="/projects"
-            class="btn-primary inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#2dd4bf] to-[#14b8a6] px-6 py-3.5 text-sm font-semibold text-[#04201c] shadow-lg shadow-[#2dd4bf]/20 transition-all hover:scale-[1.02] hover:brightness-110 hover:shadow-xl hover:shadow-[#2dd4bf]/30">
+            class="btn-primary inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-primary-hover px-6 py-3.5 text-sm font-semibold text-primary-contrast shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] hover:brightness-110 hover:shadow-xl hover:shadow-primary/30">
             <i class="pi pi-th-large text-xs" aria-hidden="true"></i>
             <span>View Projects</span>
           </a>
 
           @if (HeroData()?.resume) {
           <button type="button" (click)="downloadResume()"
-            class="btn-outline inline-flex cursor-pointer items-center gap-2 rounded-xl border border-[#16323a] bg-[#0a1c22]/80 px-5 py-3.5 text-sm font-semibold text-[#e7f2f3] backdrop-blur-sm transition-all hover:border-[#2dd4bf] hover:bg-[#2dd4bf]/10 hover:text-[#2dd4bf]">
+            class="btn-outline inline-flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-bg-elevated/80 px-5 py-3.5 text-sm font-semibold text-text backdrop-blur-sm transition-all hover:border-primary hover:bg-primary/10 hover:text-primary">
             <i class="pi pi-download text-xs" aria-hidden="true"></i>
             <span>Resume</span>
           </button>
@@ -56,24 +56,24 @@
         </div>
 
         <!-- Social Channels -->
-        <div class="mt-10 flex items-center gap-4 border-t border-[#16323a]/60 pt-6">
-          <span class="text-xs font-semibold uppercase tracking-wider text-[#9bb4b9]">Find me on</span>
+        <div class="mt-10 flex items-center gap-4 border-t border-border/60 pt-6">
+          <span class="text-xs font-semibold uppercase tracking-wider text-muted">Find me on</span>
           <div class="flex items-center gap-2">
             @if (AboutData()?.githubLink; as github) {
             <a [href]="github" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile"
-              class="social-icon flex h-10 w-10 items-center justify-center rounded-xl border border-[#16323a] bg-[#0a1c22] text-[#9bb4b9] transition-all hover:border-[#2dd4bf] hover:text-[#2dd4bf]">
+              class="social-icon flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-bg-elevated text-muted transition-all hover:border-primary hover:text-primary">
               <i class="pi pi-github" aria-hidden="true"></i>
             </a>
             }
             @if (AboutData()?.linkedinLink; as linkedin) {
             <a [href]="linkedin" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile"
-              class="social-icon flex h-10 w-10 items-center justify-center rounded-xl border border-[#16323a] bg-[#0a1c22] text-[#9bb4b9] transition-all hover:border-[#2dd4bf] hover:text-[#2dd4bf]">
+              class="social-icon flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-bg-elevated text-muted transition-all hover:border-primary hover:text-primary">
               <i class="pi pi-linkedin" aria-hidden="true"></i>
             </a>
             }
             @if (AboutData()?.email; as email) {
             <a [href]="'mailto:' + email" aria-label="Email Jawad"
-              class="social-icon flex h-10 w-10 items-center justify-center rounded-xl border border-[#16323a] bg-[#0a1c22] text-[#9bb4b9] transition-all hover:border-[#2dd4bf] hover:text-[#2dd4bf]">
+              class="social-icon flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-bg-elevated text-muted transition-all hover:border-primary hover:text-primary">
               <i class="pi pi-envelope" aria-hidden="true"></i>
             </a>
             }
@@ -84,25 +84,25 @@
       <!-- Right Column: Visual Frame with Floating Badges -->
       <div class="relative flex justify-center lg:justify-end">
         <div
-          class="hero-visual-card relative w-full max-w-md overflow-hidden rounded-3xl border border-[#16323a] bg-gradient-to-b from-[#0e2730]/90 to-[#07171e]/90 p-4 shadow-2xl shadow-black/60 backdrop-blur-xl">
+          class="hero-visual-card relative w-full max-w-md overflow-hidden rounded-3xl border border-border bg-gradient-to-b from-bg-elevated/90 to-bg/90 p-4 shadow-[var(--shadow-lg)] backdrop-blur-xl">
           @if (HeroData()?.image; as heroImg) {
           <div
-            class="relative aspect-square w-full overflow-hidden rounded-2xl border border-[#16323a]/80 bg-[#061319]">
+            class="relative aspect-square w-full overflow-hidden rounded-2xl border border-border/80 bg-bg">
             <img [src]="heroImg" alt="Jawad Ahmad - Software Engineer"
               class="h-full w-full object-cover transition-transform duration-500 hover:scale-105" />
             <div
-              class="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#061319] via-transparent to-transparent opacity-60">
+              class="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg via-transparent to-transparent opacity-60">
             </div>
           </div>
           } @else {
           <div
-            class="flex aspect-square w-full flex-col items-center justify-center rounded-2xl border border-dashed border-[#16323a] bg-[#071820] text-center p-6">
+            class="flex aspect-square w-full flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-bg text-center p-6">
             <span
-              class="flex h-20 w-20 items-center justify-center rounded-2xl bg-[#2dd4bf]/10 text-3xl font-bold text-[#2dd4bf]">
+              class="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10 text-3xl font-bold text-primary">
               JW
             </span>
-            <p class="mt-4 font-semibold text-white">Jawad Ahmad</p>
-            <p class="text-xs text-[#9bb4b9]">Full-Stack Software Developer</p>
+            <p class="mt-4 font-semibold text-text">Jawad Ahmad</p>
+            <p class="text-xs text-muted">Full-Stack Software Developer</p>
           </div>
           }
 
@@ -114,42 +114,42 @@
   </section>
 
   <!-- Core Competencies / Feature Highlights -->
-  <section class="border-y border-[#16323a]/80 bg-[#050e13]/60 py-12">
+  <section class="border-y border-border/80 bg-primary-soft/25 py-12">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-1 lg:grid-cols-3">
         <!-- Feature 1 -->
         <div
-          class="flex items-start gap-3.5 rounded-2xl border border-[#16323a]/60 bg-[#0a1c22]/40 p-4 backdrop-blur-sm">
-          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2dd4bf]/10 text-[#2dd4bf]">
+          class="flex items-start gap-3.5 rounded-2xl border border-border/60 bg-bg-elevated/80 p-4 backdrop-blur-sm">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <i class="pi pi-desktop text-base" aria-hidden="true"></i>
           </div>
           <div>
-            <h2 class="text-sm font-bold text-white">Modern Frontend</h2>
-            <p class="mt-1 text-xs text-[#9bb4b9]">Angular 21 signals, PrimeNG, TailwindCSS &amp; OnPush reactivity.</p>
+            <h2 class="text-sm font-bold text-text">Modern Frontend</h2>
+            <p class="mt-1 text-xs text-muted">Angular 21 signals, PrimeNG, TailwindCSS &amp; OnPush reactivity.</p>
           </div>
         </div>
 
         <!-- Feature 2 -->
         <div
-          class="flex items-start gap-3.5 rounded-2xl border border-[#16323a]/60 bg-[#0a1c22]/40 p-4 backdrop-blur-sm">
-          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0ea5e9]/10 text-[#0ea5e9]">
+          class="flex items-start gap-3.5 rounded-2xl border border-border/60 bg-bg-elevated/80 p-4 backdrop-blur-sm">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">
             <i class="pi pi-server text-base" aria-hidden="true"></i>
           </div>
           <div>
-            <h2 class="text-sm font-bold text-white">Robust Backend</h2>
-            <p class="mt-1 text-xs text-[#9bb4b9]">ASP.NET Core RESTful APIs, Entity Framework &amp; security.</p>
+            <h2 class="text-sm font-bold text-text">Robust Backend</h2>
+            <p class="mt-1 text-xs text-muted">ASP.NET Core RESTful APIs, Entity Framework &amp; security.</p>
           </div>
         </div>
 
         <!-- Feature 3 -->
         <div
-          class="flex items-start gap-3.5 rounded-2xl border border-[#16323a]/60 bg-[#0a1c22]/40 p-4 backdrop-blur-sm">
-          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#a855f7]/10 text-[#a855f7]">
+          class="flex items-start gap-3.5 rounded-2xl border border-border/60 bg-bg-elevated/80 p-4 backdrop-blur-sm">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#a855f7]/10 text-[#8b5cf6] dark:text-[#c4a5fb]">
             <i class="pi pi-database text-base" aria-hidden="true"></i>
           </div>
           <div>
-            <h2 class="text-sm font-bold text-white">Cloud &amp; Storage</h2>
-            <p class="mt-1 text-xs text-[#9bb4b9]">PostgreSQL, Firebase Realtime DB, and cloud infrastructure.</p>
+            <h2 class="text-sm font-bold text-text">Cloud &amp; Storage</h2>
+            <p class="mt-1 text-xs text-muted">PostgreSQL, Firebase Realtime DB, and cloud infrastructure.</p>
           </div>
         </div>
 
@@ -162,12 +162,12 @@
   <section class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
     <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
       <div>
-        <p class="text-xs font-bold uppercase tracking-widest text-[#2dd4bf]">Featured Work</p>
-        <h2 class="mt-1 text-3xl font-extrabold text-white sm:text-4xl">Selected Projects</h2>
-        <p class="mt-2 text-sm text-[#9bb4b9]">Handpicked applications engineered for scale and real-world impact.</p>
+        <p class="text-xs font-bold uppercase tracking-widest text-primary">Featured Work</p>
+        <h2 class="mt-1 text-3xl font-extrabold text-text sm:text-4xl">Selected Projects</h2>
+        <p class="mt-2 text-sm text-muted">Handpicked applications engineered for scale and real-world impact.</p>
       </div>
       <a routerLink="/projects"
-        class="inline-flex items-center gap-2 text-sm font-semibold text-[#2dd4bf] hover:underline">
+        class="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
         <span>View all projects</span>
         <i class="pi pi-arrow-right text-xs" aria-hidden="true"></i>
       </a>
@@ -177,25 +177,25 @@
     <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       @if (isLoading()) {
       @for (n of [1, 2, 3]; track n) {
-      <div class="h-96 animate-pulse rounded-2xl border border-[#16323a] bg-[#0a1c22]"></div>
+      <div class="h-96 animate-pulse rounded-2xl border border-border bg-bg-elevated"></div>
       }
       } @else {
       @for (proj of FeaturedProjects(); track proj.id) {
       <article
-        class="project-card group flex flex-col overflow-hidden rounded-2xl border border-[#16323a] bg-[#0a1c22] transition-all duration-300 hover:-translate-y-1 hover:border-[#2dd4bf]/40 hover:shadow-xl hover:shadow-[#2dd4bf]/10">
+        class="project-card group flex flex-col overflow-hidden rounded-2xl border border-border bg-bg-elevated transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10">
         <!-- Project Image -->
-        <div class="relative aspect-video w-full overflow-hidden bg-[#061319]">
+        <div class="relative aspect-video w-full overflow-hidden bg-bg">
           @if (getCoverImage(proj); as cover) {
           <img [src]="cover" [alt]="proj.title"
             class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
           } @else {
-          <div class="flex h-full w-full items-center justify-center text-[#9bb4b9]">
+          <div class="flex h-full w-full items-center justify-center text-muted">
             <i class="pi pi-th-large text-3xl opacity-40" aria-hidden="true"></i>
           </div>
           }
           @if (proj.images && proj.images.length > 1) {
           <span
-            class="absolute top-3 right-3 flex items-center gap-1 rounded-md bg-[#061319]/80 px-2 py-0.5 text-[11px] font-medium text-white backdrop-blur-sm">
+            class="absolute top-3 right-3 flex items-center gap-1 rounded-md bg-bg/80 px-2 py-0.5 text-[11px] font-medium text-text backdrop-blur-sm">
             <i class="pi pi-images text-[10px]" aria-hidden="true"></i>
             <span>{{ proj.images.length }}</span>
           </span>
@@ -204,31 +204,31 @@
 
         <!-- Card Content -->
         <div class="flex flex-1 flex-col p-5">
-          <h3 class="text-lg font-bold text-white transition-colors group-hover:text-[#2dd4bf]">{{ proj.title }}</h3>
-          <p class="mt-2 line-clamp-3 text-sm leading-relaxed text-[#9bb4b9]">{{ proj.description }}</p>
+          <h3 class="text-lg font-bold text-text transition-colors group-hover:text-primary">{{ proj.title }}</h3>
+          <p class="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">{{ proj.description }}</p>
 
           <!-- Tech Badges -->
           <div class="mt-4 flex flex-wrap gap-1.5">
             @for (t of getTechList(proj.technologies); track t) {
             <span
-              class="rounded-md border border-[#16323a] bg-[#061319] px-2 py-0.5 text-[11px] font-medium text-[#2dd4bf]">
+              class="rounded-md border border-border bg-bg px-2 py-0.5 text-[11px] font-medium text-primary">
               {{ t }}
             </span>
             }
           </div>
 
           <!-- Links -->
-          <div class="mt-auto flex items-center gap-3 border-t border-[#16323a]/60 pt-4 text-xs font-semibold">
+          <div class="mt-auto flex items-center gap-3 border-t border-border/60 pt-4 text-xs font-semibold">
             @if (proj.liveLink) {
             <a [href]="proj.liveLink" target="_blank" rel="noopener noreferrer"
-              class="inline-flex items-center gap-1.5 text-[#2dd4bf] hover:underline" aria-label="Open live project">
+              class="inline-flex items-center gap-1.5 text-primary hover:underline" aria-label="Open live project">
               <i class="pi pi-external-link text-[10px]" aria-hidden="true"></i>
               <span>Live Demo</span>
             </a>
             }
             @if (proj.githubLink) {
             <a [href]="proj.githubLink" target="_blank" rel="noopener noreferrer"
-              class="inline-flex items-center gap-1.5 text-[#9bb4b9] hover:text-white"
+              class="inline-flex items-center gap-1.5 text-muted hover:text-text"
               aria-label="View source on GitHub">
               <i class="pi pi-github text-xs" aria-hidden="true"></i>
               <span>Source Code</span>
@@ -238,9 +238,9 @@
         </div>
       </article>
       } @empty {
-      <div class="col-span-full rounded-2xl border border-[#16323a] bg-[#0a1c22] p-12 text-center text-[#9bb4b9]">
-        <i class="pi pi-briefcase mb-3 text-4xl text-[#2dd4bf]/40" aria-hidden="true"></i>
-        <p class="text-base font-semibold text-white">Projects are currently being cataloged</p>
+      <div class="col-span-full rounded-2xl border border-border bg-bg-elevated p-12 text-center text-muted">
+        <i class="pi pi-briefcase mb-3 text-4xl text-primary/40" aria-hidden="true"></i>
+        <p class="text-base font-semibold text-text">Projects are currently being cataloged</p>
         <p class="mt-1 text-sm">Check back shortly or visit the projects page.</p>
       </div>
       }
@@ -250,21 +250,21 @@
 
   <!-- Skills & Technologies Preview -->
   @if (FeaturedSkills().length > 0) {
-  <section class="border-t border-[#16323a]/60 bg-[#061319] py-20">
+  <section class="border-t border-border/60 bg-bg py-20">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="text-center">
-        <p class="text-xs font-bold uppercase tracking-widest text-[#2dd4bf]">Toolkit &amp; Frameworks</p>
-        <h2 class="mt-1 text-3xl font-extrabold text-white sm:text-4xl">Technical Arsenal</h2>
-        <p class="mx-auto mt-2 max-w-2xl text-sm text-[#9bb4b9]">The languages, libraries, databases, and DevOps tools
+        <p class="text-xs font-bold uppercase tracking-widest text-primary">Toolkit &amp; Frameworks</p>
+        <h2 class="mt-1 text-3xl font-extrabold text-text sm:text-4xl">Technical Arsenal</h2>
+        <p class="mx-auto mt-2 max-w-2xl text-sm text-muted">The languages, libraries, databases, and DevOps tools
           powering my engineering solutions.</p>
       </div>
 
       <div class="mt-12 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         @for (s of FeaturedSkills(); track s.id) {
         <div
-          class="skill-tile flex items-start gap-3.5 rounded-2xl border border-[#16323a] bg-[#0a1c22]/80 p-4 transition-all duration-300 hover:border-[#2dd4bf]/50 hover:bg-[#0c242c]">
+          class="skill-tile flex items-start gap-3.5 rounded-2xl border border-border bg-bg-elevated/80 p-4 transition-all duration-300 hover:border-primary/50 hover:bg-primary-soft/40">
           <span
-            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#16323a] bg-[#061319] text-[#2dd4bf]">
+            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-bg text-primary">
             @if (s.iconLink) {
             <img [src]="s.iconLink" [alt]="s.title" class="h-6 w-6 object-contain" />
             } @else {
@@ -272,8 +272,8 @@
             }
           </span>
           <div class="min-w-0 flex-1">
-            <h3 class="truncate text-sm font-bold text-white">{{ s.title }}</h3>
-            <p class="mt-1 line-clamp-2 text-xs leading-relaxed text-[#9bb4b9]">{{ s.description }}</p>
+            <h3 class="truncate text-sm font-bold text-text">{{ s.title }}</h3>
+            <p class="mt-1 line-clamp-2 text-xs leading-relaxed text-muted">{{ s.description }}</p>
           </div>
         </div>
         }
@@ -281,7 +281,7 @@
 
       <div class="mt-8 text-center">
         <a routerLink="/skills"
-          class="inline-flex items-center gap-2 rounded-xl border border-[#16323a] bg-[#0a1c22] px-5 py-2.5 text-xs font-semibold text-[#e7f2f3] transition-all hover:border-[#2dd4bf] hover:text-[#2dd4bf]">
+          class="inline-flex items-center gap-2 rounded-xl border border-border bg-bg-elevated px-5 py-2.5 text-xs font-semibold text-text transition-all hover:border-primary hover:text-primary">
           <span>Explore all skills</span>
           <i class="pi pi-arrow-right text-[10px]" aria-hidden="true"></i>
         </a>
@@ -293,17 +293,17 @@
   <!-- Call to Action Banner -->
   <section class="mx-auto max-w-7xl px-4 pb-24 pt-10 sm:px-4 lg:px-6">
     <div
-      class="relative overflow-hidden rounded-3xl border border-[#2dd4bf]/30 bg-gradient-to-r from-[#0a1c22] via-[#0d2a33] to-[#0a1c22] p-8 sm:p-12 lg:p-16 shadow-2xl">
+      class="relative overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-r from-bg-elevated via-primary-soft/60 to-bg-elevated p-8 sm:p-12 lg:p-16 shadow-[var(--shadow-lg)]">
       <!-- Glow effect -->
-      <div class="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#2dd4bf]/15 blur-3xl"
+      <div class="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/15 blur-3xl"
         aria-hidden="true"></div>
 
       <div class="relative z-10 flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
         <div class="max-w-2xl">
-          <span class="text-xs font-bold uppercase tracking-widest text-[#2dd4bf]">Let's Collaborate</span>
-          <h2 class="mt-2 text-2xl font-extrabold text-white sm:text-3xl lg:text-4xl">Have a project or opportunity in
+          <span class="text-xs font-bold uppercase tracking-widest text-primary">Let's Collaborate</span>
+          <h2 class="mt-2 text-2xl font-extrabold text-text sm:text-3xl lg:text-4xl">Have a project or opportunity in
             mind?</h2>
-          <p class="mt-3 text-base leading-relaxed text-[#9bb4b9]">
+          <p class="mt-3 text-base leading-relaxed text-muted">
             Whether you need a full-stack web application from scratch, or high-performance API
             integrations, I'd love to hear about it.
           </p>
@@ -312,7 +312,7 @@
 
         <div class="flex flex-wrap items-center gap-4">
           <a routerLink="/contact"
-            class="btn-primary inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#2dd4bf] to-[#14b8a6] px-6 py-3.5 text-sm font-semibold text-[#04201c] shadow-lg shadow-[#2dd4bf]/20 transition-all hover:scale-[1.02] hover:brightness-110 hover:shadow-xl hover:shadow-[#2dd4bf]/30">
+            class="btn-primary inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-primary-hover px-6 py-3.5 text-sm font-semibold text-primary-contrast shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] hover:brightness-110 hover:shadow-xl hover:shadow-primary/30">
 
             <i class="pi pi-send text-xs" aria-hidden="true"></i>
             <span>Start a Conversation</span>
@@ -320,9 +320,9 @@
 
           @if (AboutData()?.email; as email) {
           <a [href]="'mailto:' + email" class="btn-primary inline-flex min-w-[200px] items-center justify-center gap-2 rounded-xl
-             border border-[#16323a] bg-[#061319] px-6 py-3.5
-             text-sm font-semibold text-[#e7f2f3] transition-all
-             hover:border-[#2dd4bf] hover:text-[#2dd4bf]">
+             border border-border bg-bg px-6 py-3.5
+             text-sm font-semibold text-text transition-all
+             hover:border-primary hover:text-primary">
 
             <i class="pi pi-envelope text-xs" aria-hidden="true"></i>
             <span>Email directly</span>
