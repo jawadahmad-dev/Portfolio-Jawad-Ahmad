@@ -61,9 +61,6 @@ import { ThemeService } from './theme.service';
         transform 220ms ease,
         opacity 220ms ease;
     }
-    .theme-toggle__icon--light {
-      transform: rotate(180deg);
-    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

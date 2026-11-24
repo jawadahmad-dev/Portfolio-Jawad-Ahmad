@@ -25,6 +25,8 @@ export class ThemeService implements OnDestroy {
   private mediaQuery: MediaQueryList | null = null;
   private readonly mediaListener = (event: MediaQueryListEvent) =>
     this.systemDark.set(event.matches);
+  private hasAppliedTheme = false;
+  private transitionTimer: number | null = null;
 
   constructor(@Inject(PLATFORM_ID) platformId: object) {
     if (!isPlatformBrowser(platformId)) return;
@@ -47,14 +49,46 @@ export class ThemeService implements OnDestroy {
     effect(() => {
       const resolved = this.resolved();
       const root = document.documentElement;
+
+      const applyTheme = () => {
+        root.classList.toggle('dark', resolved === 'dark');
+        root.style.colorScheme = resolved;
+
+        const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+        themeColor?.setAttribute('content', resolved === 'dark' ? '#061319' : '#eff7f6');
+      };
+
+      const reducedMotion =
+        typeof window.matchMedia === 'function' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!this.hasAppliedTheme || reducedMotion) {
+        applyTheme();
+        this.hasAppliedTheme = true;
+        return;
+      }
+
       root.classList.add('theme-transition');
-      root.classList.toggle('dark', resolved === 'dark');
-      root.style.colorScheme = resolved;
 
-      const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
-      themeColor?.setAttribute('content', resolved === 'dark' ? '#061319' : '#eff7f6');
+      type ViewTransitionDocument = Document & {
+        startViewTransition?: (callback: () => void) => { finished: Promise<void> };
+      };
+      const transitionDocument = document as ViewTransitionDocument;
 
-      window.setTimeout(() => root.classList.remove('theme-transition'), 300);
+      if (typeof transitionDocument.startViewTransition === 'function') {
+        void transitionDocument.startViewTransition(applyTheme).finished.finally(() => {
+          root.classList.remove('theme-transition');
+        });
+      } else {
+        applyTheme();
+        if (this.transitionTimer !== null) window.clearTimeout(this.transitionTimer);
+        this.transitionTimer = window.setTimeout(() => {
+          root.classList.remove('theme-transition');
+          this.transitionTimer = null;
+        }, 260);
+      }
+
+      this.hasAppliedTheme = true;
     });
   }
 
