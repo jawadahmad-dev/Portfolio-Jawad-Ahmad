@@ -169,6 +169,20 @@ export class Rest {
   }
 
   // ---- Contact Form Submission ----
+  saveMessage(payload: {
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+    createdAt: string;
+    status: 'new';
+  }): Promise<void> {
+    return runInInjectionContext(this.injector, () => {
+      const key = push(ref(this.db, 'messages')).key!;
+      return set(ref(this.db, `messages/${key}`), payload);
+    });
+  }
+
   sendContactForm(payload: ContactModel): Observable<Web3FormsResponse> {
     return this.http.post<Web3FormsResponse>('https://api.web3forms.com/submit', payload);
   }

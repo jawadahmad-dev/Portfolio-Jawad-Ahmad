@@ -93,6 +93,22 @@ export class Experience implements OnInit {
     return parts.join(' ');
   }
 
+  protected descriptionBullets(description?: string): string[] {
+    if (!description?.trim()) return [];
+    return description
+      .split(/(?:\r?\n|•)/)
+      .map((item) => item.replace(/^[-*]\s*/, '').trim())
+      .filter(Boolean);
+  }
+
+  protected techList(technologies?: string): string[] {
+    if (!technologies?.trim()) return [];
+    return technologies
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
   protected downloadResume(): void {
     const resume = this.hero()?.resume;
     if (!isPdfDataUrl(resume) || !saveResumeFile(resume, 'Jawad-Resume.pdf')) {

@@ -28,6 +28,7 @@ export class Contact implements OnInit {
   protected readonly messageMax = MESSAGE_MAX;
   protected readonly sending = signal(false);
   protected readonly sent = signal(false);
+  protected readonly cooldownActive = signal(false);
   protected readonly about = signal<AboutModel | null>(null);
   protected readonly copied = signal(false);
 
@@ -53,7 +54,7 @@ export class Contact implements OnInit {
         '',
         [Validators.required, Validators.maxLength(MESSAGE_MAX), Validators.pattern(/\S/)],
       ],
-      botcheck: [false],
+      botcheck: ['', Validators.maxLength(0)],
     });
   }
 
@@ -89,6 +90,16 @@ export class Contact implements OnInit {
   protected onSubmitContact(): void {
     if (this.sending()) return;
 
+    const honeypot = this.contactForm.get('botcheck')?.value;
+    if (honeypot) {
+      return;
+    }
+
+    if (this.cooldownActive()) {
+      this.sharedService.toaster('warn', 'Please wait', 'You can send another message shortly.');
+      return;
+    }
+
     if (this.contactForm.invalid) {
       this.contactForm.markAllAsTouched();
       this.sharedService.toaster('warn', 'Required Fields', 'Please complete all required fields.');
@@ -102,7 +113,7 @@ export class Contact implements OnInit {
       email: v.email.trim(),
       subject: v.subject.trim(),
       message: v.message.trim(),
-      botcheck: !!v.botcheck,
+      botcheck: false,
     };
 
     this.sending.set(true);
@@ -110,13 +121,20 @@ export class Contact implements OnInit {
       next: (res: Web3FormsResponse) => {
         this.sending.set(false);
         if (res.success) {
-          this.contactForm.reset({
-            name: '',
-            email: '',
-            subject: '',
-            message: '',
-            botcheck: false,
-          });
+          void this.restService
+            .saveMessage({
+              name: payload.name,
+              email: payload.email,
+              subject: payload.subject,
+              message: payload.message,
+              createdAt: new Date().toISOString(),
+              status: 'new',
+            })
+            .catch((err: unknown) => console.warn('Could not archive contact message:', err));
+
+          this.cooldownActive.set(true);
+          setTimeout(() => this.cooldownActive.set(false), 30_000);
+          this.contactForm.reset({ name: '', email: '', subject: '', message: '', botcheck: '' });
           this.sent.set(true);
           this.sharedService.toaster('success', 'Sent!', 'Thank you! Your message was delivered.');
           return;

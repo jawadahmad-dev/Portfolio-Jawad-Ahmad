@@ -1,3 +1,4 @@
+<div class="scroll-progress" [style.transform]="'scaleX(' + scrollProgress() + ')'" aria-hidden="true"></div>
 <p-toast></p-toast>
 <p-confirmdialog></p-confirmdialog>
 
@@ -39,6 +40,12 @@
 }
 
 
-<snow-effect flakes="150" speed="0.5" color="white" wind="1" opacity="0.3">
-</snow-effect>
+<snow-effect flakes="75" speed="0.35" color="teal" wind="1" opacity="0.12"></snow-effect>
 <router-outlet />
+
+@if (showBackToTop()) {
+<button type="button" (click)="scrollToTop()" aria-label="Back to top"
+    class="fixed bottom-5 right-5 z-[80] flex h-12 w-12 items-center justify-center rounded-full border border-[var(--color-primary)]/40 bg-[var(--color-bg-elevated)] text-[var(--color-primary)] shadow-[var(--shadow-glow)] backdrop-blur-md">
+    <i class="pi pi-arrow-up" aria-hidden="true"></i>
+</button>
+}

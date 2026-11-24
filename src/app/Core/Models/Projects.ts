@@ -9,4 +9,6 @@ export interface ProjectsModel {
   images: string[];
   /** Old single image link. Only present on projects saved before multiple images were supported. */
   image?: string;
+  category?: 'Full-stack' | 'Frontend' | string;
+  featured?: boolean;
 }
